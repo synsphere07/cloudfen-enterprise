@@ -1,0 +1,822 @@
+<title>CloudFen Architecture</title>
+<style>
+:root {
+  /* Light theme tokens */
+  --bg-primary: #E3F2FD;
+  --bg-surface: #F8FAFC;
+  --bg-dark: #0D1524;
+  --text-primary: #0D1524;
+  --text-secondary: #4B5563;
+  --accent-primary: #0A7B83;
+  --accent-secondary: #1A73E8;
+  --accent-glow: #FFFFFF;
+  --border-light: #E5E7EB;
+  --border-dark: #374151;
+
+  /* Typography */
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Monaco', 'Consolas', monospace;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+
+  /* Animation timing */
+  --transition-smooth: 0.3s ease;
+  --transition-slow: 0.8s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-primary: #0D1524;
+    --bg-surface: #1E293B;
+    --bg-dark: #0D1524;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --accent-primary: #0EA5E9;
+    --accent-secondary: #3B82F6;
+    --accent-glow: #FFFFFF;
+    --border-light: #334155;
+    --border-dark: #1E293B;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #0D1524;
+  --bg-surface: #1E293B;
+  --bg-dark: #0D1524;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --accent-primary: #0EA5E9;
+  --accent-secondary: #3B82F6;
+  --accent-glow: #FFFFFF;
+  --border-light: #334155;
+  --border-dark: #1E293B;
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color var(--transition-slow);
+}
+
+/* 3D Canvas Container */
+.canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* UI Overlay */
+.ui-overlay {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ui-overlay > * {
+  pointer-events: auto;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 100;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-glow);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.logo-icon {
+  font-size: 1.8rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-lg);
+  list-style: none;
+}
+
+.nav-link {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-smooth);
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--accent-primary);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-primary);
+  transition: width var(--transition-smooth);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Hero Content */
+.hero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+  width: 90%;
+  max-width: 800px;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--space-md);
+  text-wrap: balance;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  margin-bottom: var(--space-xl);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-xl);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(10, 123, 131, 0.3);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(10, 123, 131, 0.4);
+}
+
+/* Sequence Indicator */
+.sequence-indicator {
+  position: fixed;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-xs);
+  z-index: 50;
+}
+
+.sequence-step {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all var(--transition-smooth);
+}
+
+.sequence-step.active {
+  background: var(--accent-primary);
+  transform: scale(1.2);
+}
+
+/* Info Panel */
+.info-panel {
+  position: fixed;
+  right: var(--space-md);
+  bottom: var(--space-xl);
+  background: var(--bg-surface);
+  padding: var(--space-md);
+  border-radius: 12px;
+  max-width: 300px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-light);
+  z-index: 20;
+}
+
+.info-panel h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin-bottom: var(--space-xs);
+  color: var(--accent-primary);
+}
+
+.info-panel p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: fixed;
+  bottom: var(--space-md);
+  right: var(--space-md);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: all var(--transition-smooth);
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .hero {
+    padding: var(--space-md);
+  }
+
+  .info-panel {
+    right: var(--space-sm);
+    bottom: var(--space-lg);
+    max-width: calc(100% - 2rem);
+  }
+
+  .sequence-indicator {
+    bottom: var(--space-lg);
+  }
+}
+
+/* Animation Classes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Loading State */
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.5s ease;
+}
+
+.loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--space-md);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+</style>
+
+<!-- Loading Screen -->
+<div class="loading" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Initializing CloudFen Scene</div>
+</div>
+
+<!-- Main Content -->
+<div class="canvas-container" id="canvas-container"></div>
+
+<div class="ui-overlay">
+  <header class="header">
+    <a href="#" class="logo">
+      <span class="logo-icon">☁️</span>
+      <span>CloudFen</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" class="nav-link">Architecture</a></li>
+      <li><a href="#" class="nav-link">Services</a></li>
+      <li><a href="#" class="nav-link">Case Studies</a></li>
+      <li><a href="#" class="nav-link">Contact</a></li>
+    </ul>
+  </header>
+
+  <section class="hero fade-in-up">
+    <h1>Digital Architecture in Motion</h1>
+    <p>Watch as isolated components converge into unified systems. Our platform transforms fragmented infrastructure into cohesive, intelligent networks.</p>
+    <button class="cta-button">Explore the Platform</button>
+  </section>
+
+  <div class="sequence-indicator">
+    <div class="sequence-step active" data-step="1"></div>
+    <div class="sequence-step" data-step="2"></div>
+    <div class="sequence-step" data-step="3"></div>
+    <div class="sequence-step" data-step="4"></div>
+  </div>
+
+  <div class="info-panel">
+    <h3>Current Phase: Floating Blocks</h3>
+    <p>Individual components operate independently before converging into unified systems.</p>
+  </div>
+
+  <div class="theme-toggle" id="themeToggle" title="Toggle theme">
+    <span style="font-size: 1.2rem;">🌓</span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.162.0/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+
+<script>
+// Initialize the 3D scene
+class CloudFenScene {
+  constructor() {
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.clock = new THREE.Clock();
+
+    this.blocks = [];
+    this.layers = [];
+    this.currentStep = 1;
+    this.totalSteps = 4;
+
+    this.sequenceSteps = document.querySelectorAll('.sequence-step');
+    this.infoPanel = document.querySelector('.info-panel h3');
+    this.infoText = document.querySelector('.info-panel p');
+
+    this.init();
+  }
+
+  init() {
+    // Setup renderer
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    document.getElementById('canvas-container').appendChild(this.renderer.domElement);
+
+    // Setup camera
+    this.camera.position.z = 30;
+    this.camera.position.y = 15;
+
+    // Add lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    this.scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(10, 20, 15);
+    this.scene.add(directionalLight);
+
+    const pointLight = new THREE.PointLight(0x0a7b83, 1, 100);
+    pointLight.position.set(0, 0, 20);
+    this.scene.add(pointLight);
+    this.pointLight = pointLight;
+
+    // Create initial floating blocks
+    this.createFloatingBlocks();
+
+    // Start animation
+    this.animate();
+
+    // Setup sequence progression
+    this.startSequence();
+
+    // Hide loading screen
+    setTimeout(() => {
+      document.getElementById('loading').classList.add('hidden');
+    }, 1500);
+  }
+
+  createFloatingBlocks() {
+    // Create 50 floating blocks in random positions
+    const blockCount = 50;
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x0a7b83,
+      transparent: true,
+      opacity: 0.8,
+      shininess: 100
+    });
+
+    for (let i = 0; i < blockCount; i++) {
+      const block = new THREE.Mesh(geometry, material);
+
+      // Random position in a large sphere
+      const radius = 20;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((2 * Math.random()) - 1);
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta);
+      const z = radius * Math.cos(phi);
+
+      block.position.set(x, y, z);
+      block.rotation.set(
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        Math.random() * Math.PI
+      );
+
+      // Store velocity and rotation speed
+      block.userData = {
+        velocity: new THREE.Vector3(
+          (Math.random() - 0.5) * 0.02,
+          (Math.random() - 0.5) * 0.02,
+          (Math.random() - 0.5) * 0.02
+        ),
+        rotationSpeed: new THREE.Vector3(
+          (Math.random() - 0.5) * 0.01,
+          (Math.random() - 0.5) * 0.01,
+          (Math.random() - 0.5) * 0.01
+        ),
+        originalPosition: block.position.clone(),
+        targetPosition: null,
+        layer: null
+      };
+
+      this.blocks.push(block);
+      this.scene.add(block);
+    }
+  }
+
+  createLayers() {
+    // Organize blocks into 4 distinct layers
+    this.layers = [[], [], [], []];
+
+    this.blocks.forEach((block, index) => {
+      const layerIndex = index % 4;
+      this.layers[layerIndex].push(block);
+      block.userData.layer = layerIndex;
+
+      // Calculate target position for this layer
+      const layerY = (layerIndex - 1.5) * 8; // Space layers vertically
+      const radius = 12;
+      const angle = (index / this.layers[layerIndex].length) * Math.PI * 2;
+      const x = radius * Math.cos(angle);
+      const z = radius * Math.sin(angle);
+
+      block.userData.targetPosition = new THREE.Vector3(x, layerY, z);
+    });
+  }
+
+  startSequence() {
+    // Progress through sequence steps automatically
+    const sequenceInterval = setInterval(() => {
+      if (this.currentStep < this.totalSteps) {
+        this.progressToStep(this.currentStep + 1);
+      } else {
+        clearInterval(sequenceInterval);
+        // Restart sequence after completion
+        setTimeout(() => {
+          this.resetToStep(1);
+          this.startSequence();
+        }, 5000);
+      }
+    }, 8000); // 8 seconds per step
+  }
+
+  progressToStep(step) {
+    this.currentStep = step;
+
+    // Update UI indicators
+    this.sequenceSteps.forEach((indicator, index) => {
+      if (index + 1 <= step) {
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    });
+
+    // Update info panel
+    const stepInfo = {
+      1: { title: 'Floating Blocks', text: 'Individual components operate independently before converging into unified systems.' },
+      2: { title: 'Separated Layers', text: 'Components organize into distinct architectural layers, each serving specific functions.' },
+      3: { title: 'Convergence', text: 'Layers begin to merge and align, forming cohesive system architecture.' },
+      4: { title: 'CloudFen Formation', text: 'Components converge into the CloudFen logo, symbolizing unified digital infrastructure.' }
+    };
+
+    this.infoPanel.textContent = `Current Phase: ${stepInfo[step].title}`;
+    this.infoText.textContent = stepInfo[step].text;
+
+    // Trigger step-specific animations
+    this.triggerStepAnimation(step);
+  }
+
+  triggerStepAnimation(step) {
+    switch(step) {
+      case 2:
+        // Organize into layers
+        this.createLayers();
+        this.animateToLayers();
+        break;
+      case 3:
+        // Begin convergence
+        this.animateConvergence();
+        break;
+      case 4:
+        // Form CloudFen logo
+        this.formCloudFenLogo();
+        break;
+    }
+  }
+
+  animateToLayers() {
+    // Animate blocks to their layer positions
+    this.blocks.forEach(block => {
+      if (block.userData.targetPosition) {
+        new TWEEN.Tween(block.position)
+          .to({
+            x: block.userData.targetPosition.x,
+            y: block.userData.targetPosition.y,
+            z: block.userData.targetPosition.z
+          }, 2000)
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .start();
+      }
+    });
+  }
+
+  animateConvergence() {
+    // Animate layers toward center
+    this.blocks.forEach(block => {
+      const target = new THREE.Vector3(
+        block.userData.targetPosition.x * 0.3,
+        block.userData.targetPosition.y * 0.5,
+        block.userData.targetPosition.z * 0.3
+      );
+
+      new TWEEN.Tween(block.position)
+        .to(target, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .start();
+    });
+  }
+
+  formCloudFenLogo() {
+    // Define CloudFen logo shape positions
+    // Simplified "CF" shape using blocks
+    const logoPositions = [];
+    const logoSize = 8;
+
+    // Create "C" shape
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 1.5;
+      const x = Math.cos(angle) * logoSize;
+      const y = Math.sin(angle) * logoSize;
+      logoPositions.push(new THREE.Vector3(x, y, 0));
+    }
+
+    // Create "F" shape
+    for (let i = 0; i < 8; i++) {
+      const x = logoSize + 3;
+      const y = logoSize - (i * 2);
+      logoPositions.push(new THREE.Vector3(x, y, 0));
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const x = logoSize + 3 + (i * 2);
+      const y = logoSize;
+      logoPositions.push(new THREE.Vector3(x, y, 0));
+    }
+
+    for (let i = 0; i < 4; i++) {
+      const x = logoSize + 3 + (i * 2);
+      const y = 0;
+      logoPositions.push(new THREE.Vector3(x, y, 0));
+    }
+
+    // Animate blocks to logo positions
+    this.blocks.forEach((block, index) => {
+      const targetPos = logoPositions[index % logoPositions.length] || new THREE.Vector3(0, 0, 0);
+
+      new TWEEN.Tween(block.position)
+        .to(targetPos, 2000)
+        .easing(TWEEN.Easing.Back.Out)
+        .start();
+
+      // Add glowing effect
+      new TWEEN.Tween(block.material)
+        .to({
+          color: new THREE.Color(0xffffff),
+          emissive: new THREE.Color(0x0a7b83),
+          emissiveIntensity: 1
+        }, 1000)
+        .start();
+    });
+
+    // Enhance point light
+    new TWEEN.Tween(this.pointLight)
+      .to({
+        intensity: 2,
+        distance: 200,
+        color: new THREE.Color(0xffffff)
+      }, 1000)
+      .start();
+  }
+
+  resetToStep(step) {
+    // Reset blocks to floating state
+    this.blocks.forEach(block => {
+      block.userData.targetPosition = null;
+      block.userData.layer = null;
+
+      new TWEEN.Tween(block.position)
+        .to(block.userData.originalPosition, 2000)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+
+      new TWEEN.Tween(block.material)
+        .to({
+          color: new THREE.Color(0x0a7b83),
+          emissive: new THREE.Color(0x000000),
+          emissiveIntensity: 0
+        }, 1000)
+        .start();
+    });
+
+    this.progressToStep(step);
+  }
+
+  animate() {
+    requestAnimationFrame(() => this.animate());
+
+    const delta = this.clock.getDelta();
+
+    // Update TWEEN
+    TWEEN.update();
+
+    // Animate floating blocks (step 1)
+    if (this.currentStep === 1) {
+      this.blocks.forEach(block => {
+        // Apply velocity
+        block.position.add(block.userData.velocity);
+
+        // Apply rotation
+        block.rotation.x += block.userData.rotationSpeed.x;
+        block.rotation.y += block.userData.rotationSpeed.y;
+        block.rotation.z += block.userData.rotationSpeed.z;
+
+        // Bounce off invisible boundaries
+        const boundary = 25;
+        ['x', 'y', 'z'].forEach(axis => {
+          if (Math.abs(block.position[axis]) > boundary) {
+            block.userData.velocity[axis] *= -1;
+            // Add some randomness to bounce
+            block.userData.velocity[axis] += (Math.random() - 0.5) * 0.01;
+          }
+        });
+      });
+    }
+
+    // Rotate camera slowly
+    const time = this.clock.getElapsedTime();
+    this.camera.position.x = Math.sin(time * 0.1) * 30;
+    this.camera.position.z = Math.cos(time * 0.1) * 30;
+    this.camera.lookAt(0, 0, 0);
+
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  onWindowResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+}
+
+// Initialize scene when page loads
+let cloudFenScene;
+
+window.addEventListener('DOMContentLoaded', () => {
+  cloudFenScene = new CloudFenScene();
+
+  // Handle window resize
+  window.addEventListener('resize', () => cloudFenScene.onWindowResize());
+
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+
+    // Update toggle icon
+    document.getElementById('themeToggle').innerHTML = newTheme === 'dark' ? '🌙' : '☀️';
+  });
+
+  // Manual sequence control (click on indicators)
+  document.querySelectorAll('.sequence-step').forEach((step, index) => {
+    step.addEventListener('click', () => {
+      cloudFenScene.progressToStep(index + 1);
+    });
+  });
+});
+</script>

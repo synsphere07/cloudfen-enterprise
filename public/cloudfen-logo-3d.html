@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudFen 3D Logo Animation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+  }
+
+  canvas#bgCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+
+  .stage {
+    position: relative;
+    z-index: 1;
+    perspective: 1200px;
+  }
+
+  .logo-3d {
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    animation: floatScene 7s ease-in-out infinite;
+  }
+
+  @keyframes floatScene {
+    0%, 100% { transform: rotateX(3deg) rotateY(-2deg) translateY(0); }
+    25% { transform: rotateX(-2deg) rotateY(3deg) translateY(-5px); }
+    50% { transform: rotateX(2deg) rotateY(5deg) translateY(2px); }
+    75% { transform: rotateX(-2deg) rotateY(-4deg) translateY(-3px); }
+  }
+
+  .word-row {
+    display: flex;
+    align-items: center;
+    transform-style: preserve-3d;
+  }
+
+  /* ─── LETTER STYLING ─── */
+  .char {
+    position: relative;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 110px;
+    line-height: 1;
+    letter-spacing: -2px;
+    transform-style: preserve-3d;
+    opacity: 0;
+    color: #FFFFFF;
+  }
+
+  .char .front {
+    position: relative;
+    z-index: 3;
+    color: #FFFFFF;
+  }
+
+  .char .depth {
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 1;
+  }
+  .char .depth-1 { transform: translateZ(-3px); color: rgba(255,255,255,0.5); }
+  .char .depth-2 { transform: translateZ(-6px); color: rgba(255,255,255,0.35); }
+  .char .depth-3 { transform: translateZ(-9px); color: rgba(255,255,255,0.22); }
+  .char .depth-4 { transform: translateZ(-12px); color: rgba(255,255,255,0.12); }
+  .char .depth-5 { transform: translateZ(-15px); color: rgba(200,220,240,0.08); }
+  .char .depth-6 { transform: translateZ(-18px); color: rgba(180,210,240,0.05); }
+
+  .char .glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 70px; height: 70px;
+    transform: translate(-50%, -50%) translateZ(-5px);
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  .char.revealed .glow { opacity: 1; }
+
+  /* Capital C and F slightly larger weight */
+  .char-cap .front { font-weight: 700; }
+
+  /* ─── EMBLEM SLOT ─── */
+  .emblem-slot {
+    position: relative;
+    width: 95px;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    opacity: 0;
+    margin: 0 -5px;
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="stage">
+  <div class="logo-3d" id="logo3d">
+    <div class="word-row">
+      <!-- C -->
+      <div class="char char-cap" id="c0">
+        <span class="front">C</span>
+        <span class="depth depth-1">C</span><span class="depth depth-2">C</span><span class="depth depth-3">C</span>
+        <span class="depth depth-4">C</span><span class="depth depth-5">C</span><span class="depth depth-6">C</span>
+        <div class="glow"></div>
+      </div>
+      <!-- l -->
+      <div class="char" id="c1">
+        <span class="front">l</span>
+        <span class="depth depth-1">l</span><span class="depth depth-2">l</span><span class="depth depth-3">l</span>
+        <span class="depth depth-4">l</span><span class="depth depth-5">l</span><span class="depth depth-6">l</span>
+        <div class="glow"></div>
+      </div>
+      <!-- Emblem (o) - concentric dot vortex -->
+      <div class="emblem-slot" id="emblem">
+        <canvas id="emblemCanvas" width="190" height="190" style="width:95px;height:95px;"></canvas>
+      </div>
+      <!-- u -->
+      <div class="char" id="c2">
+        <span class="front">u</span>
+        <span class="depth depth-1">u</span><span class="depth depth-2">u</span><span class="depth depth-3">u</span>
+        <span class="depth depth-4">u</span><span class="depth depth-5">u</span><span class="depth depth-6">u</span>
+        <div class="glow"></div>
+      </div>
+      <!-- d -->
+      <div class="char" id="c3">
+        <span class="front">d</span>
+        <span class="depth depth-1">d</span><span class="depth depth-2">d</span><span class="depth depth-3">d</span>
+        <span class="depth depth-4">d</span><span class="depth depth-5">d</span><span class="depth depth-6">d</span>
+        <div class="glow"></div>
+      </div>
+      <!-- F -->
+      <div class="char char-cap" id="c4">
+        <span class="front">F</span>
+        <span class="depth depth-1">F</span><span class="depth depth-2">F</span><span class="depth depth-3">F</span>
+        <span class="depth depth-4">F</span><span class="depth depth-5">F</span><span class="depth depth-6">F</span>
+        <div class="glow"></div>
+      </div>
+      <!-- e -->
+      <div class="char" id="c5">
+        <span class="front">e</span>
+        <span class="depth depth-1">e</span><span class="depth depth-2">e</span><span class="depth depth-3">e</span>
+        <span class="depth depth-4">e</span><span class="depth depth-5">e</span><span class="depth depth-6">e</span>
+        <div class="glow"></div>
+      </div>
+      <!-- n -->
+      <div class="char" id="c6">
+        <span class="front">n</span>
+        <span class="depth depth-1">n</span><span class="depth depth-2">n</span><span class="depth depth-3">n</span>
+        <span class="depth depth-4">n</span><span class="depth depth-5">n</span><span class="depth depth-6">n</span>
+        <div class="glow"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Background ───
+const bgCanvas = document.getElementById('bgCanvas');
+const bgCtx = bgCanvas.getContext('2d');
+let stars = [];
+
+function resizeBg() {
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
+  stars = [];
+  for (let i = 0; i < 150; i++) {
+    stars.push({
+      x: Math.random() * bgCanvas.width,
+      y: Math.random() * bgCanvas.height,
+      r: 0.3 + Math.random() * 1.2,
+      a: 0.15 + Math.random() * 0.4,
+      speed: 0.002 + Math.random() * 0.006,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+}
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+function drawBg(t) {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  stars.forEach(s => {
+    const flicker = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
+    bgCtx.beginPath();
+    bgCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    bgCtx.fillStyle = `rgba(180, 200, 230, ${s.a * flicker * 0.4})`;
+    bgCtx.fill();
+  });
+  requestAnimationFrame(drawBg);
+}
+requestAnimationFrame(drawBg);
+
+// ─── Emblem: concentric dot-matrix vortex ───
+const eCanvas = document.getElementById('emblemCanvas');
+const eCtx = eCanvas.getContext('2d');
+const CX = 95, CY = 95;
+let emblemVisible = false;
+let emblemRevealProgress = 0;
+
+const rings = [];
+// 5 concentric rings of dots, matching the brand logo
+const ringConfigs = [
+  { radius: 38, count: 20, dotSize: 2.5, color: '0, 200, 220' },
+  { radius: 30, count: 16, dotSize: 2.8, color: '0, 210, 230' },
+  { radius: 22, count: 12, dotSize: 3.0, color: '0, 220, 240' },
+  { radius: 14, count: 8,  dotSize: 3.2, color: '0, 230, 250' },
+  { radius: 6,  count: 4,  dotSize: 3.5, color: '0, 240, 255' },
+];
+
+ringConfigs.forEach((cfg, ri) => {
+  const dots = [];
+  for (let i = 0; i < cfg.count; i++) {
+    const baseAngle = (i / cfg.count) * Math.PI * 2;
+    dots.push({ baseAngle, shown: false });
+  }
+  rings.push({ ...cfg, dots, rotationOffset: 0 });
+});
+
+// Crescent swoosh arc (right side cutout like in the brand)
+function isInCrescent(x, y) {
+  const dx = x - (CX + 18);
+  const dy = y - CY;
+  return Math.sqrt(dx * dx + dy * dy) < 32;
+}
+
+function drawEmblem(t) {
+  eCtx.clearRect(0, 0, 190, 190);
+
+  if (!emblemVisible) {
+    requestAnimationFrame(drawEmblem);
+    return;
+  }
+
+  const time = t * 0.001;
+
+  rings.forEach((ring, ri) => {
+    const rotSpeed = (ri % 2 === 0 ? 1 : -1) * (0.15 + ri * 0.05);
+    const currentRot = time * rotSpeed;
+
+    ring.dots.forEach((dot, di) => {
+      const revealIndex = ri * 20 + di;
+      if (revealIndex > emblemRevealProgress) return;
+
+      const angle = dot.baseAngle + currentRot;
+      const wobble = Math.sin(time * 2 + di * 0.5) * 1.5;
+      const px = CX + Math.cos(angle) * (ring.radius * 2 + wobble);
+      const py = CY + Math.sin(angle) * (ring.radius * 2 + wobble);
+
+      // Skip dots in the crescent cutout area
+      if (isInCrescent(px, py)) return;
+
+      const pulse = 0.7 + 0.3 * Math.sin(time * 3 + ri + di * 0.3);
+      const alphaBase = 0.5 + (4 - ri) * 0.1;
+
+      // Glow
+      eCtx.beginPath();
+      eCtx.arc(px, py, ring.dotSize * 2.5, 0, Math.PI * 2);
+      const grd = eCtx.createRadialGradient(px, py, 0, px, py, ring.dotSize * 2.5);
+      grd.addColorStop(0, `rgba(${ring.color}, ${0.25 * pulse})`);
+      grd.addColorStop(1, `rgba(${ring.color}, 0)`);
+      eCtx.fillStyle = grd;
+      eCtx.fill();
+
+      // Dot
+      eCtx.beginPath();
+      eCtx.arc(px, py, ring.dotSize * pulse, 0, Math.PI * 2);
+      eCtx.fillStyle = `rgba(${ring.color}, ${alphaBase * pulse})`;
+      eCtx.fill();
+    });
+  });
+
+  // Center bright dot
+  if (emblemRevealProgress > 80) {
+    const centerPulse = 0.7 + 0.3 * Math.sin(time * 4);
+    const grd = eCtx.createRadialGradient(CX, CY, 0, CX, CY, 12);
+    grd.addColorStop(0, `rgba(0, 240, 255, ${0.9 * centerPulse})`);
+    grd.addColorStop(0.3, `rgba(0, 220, 240, ${0.4 * centerPulse})`);
+    grd.addColorStop(1, 'rgba(0, 200, 220, 0)');
+    eCtx.beginPath();
+    eCtx.arc(CX, CY, 12, 0, Math.PI * 2);
+    eCtx.fillStyle = grd;
+    eCtx.fill();
+
+    eCtx.beginPath();
+    eCtx.arc(CX, CY, 3 * centerPulse, 0, Math.PI * 2);
+    eCtx.fillStyle = `rgba(255, 255, 255, ${0.9 * centerPulse})`;
+    eCtx.fill();
+  }
+
+  requestAnimationFrame(drawEmblem);
+}
+requestAnimationFrame(drawEmblem);
+
+// ─── Letter reveal timeline ───
+const timeline = [
+  { type: 'char', el: document.getElementById('c0'), delay: 400 },
+  { type: 'char', el: document.getElementById('c1'), delay: 280 },
+  { type: 'emblem', delay: 450 },
+  { type: 'char', el: document.getElementById('c2'), delay: 320 },
+  { type: 'char', el: document.getElementById('c3'), delay: 280 },
+  { type: 'pause', delay: 350 },
+  { type: 'char', el: document.getElementById('c4'), delay: 320 },
+  { type: 'char', el: document.getElementById('c5'), delay: 260 },
+  { type: 'char', el: document.getElementById('c6'), delay: 260 },
+];
+
+function revealChar(el) {
+  return new Promise(resolve => {
+    el.style.transition = 'none';
+    el.style.transform = 'translateZ(-160px) rotateY(80deg) rotateX(20deg) scale(0.3)';
+    el.style.opacity = '0';
+    el.style.filter = 'blur(10px)';
+
+    requestAnimationFrame(() => {
+      el.style.transition = 'transform 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.45s ease-out, filter 0.5s ease-out';
+      el.style.transform = 'translateZ(0) rotateY(0deg) rotateX(0deg) scale(1)';
+      el.style.opacity = '1';
+      el.style.filter = 'blur(0)';
+      el.classList.add('revealed');
+      setTimeout(resolve, 220);
+    });
+  });
+}
+
+function revealEmblemAnim() {
+  return new Promise(resolve => {
+    const slot = document.getElementById('emblem');
+    slot.style.transition = 'none';
+    slot.style.transform = 'scale(0) rotateZ(180deg)';
+    slot.style.opacity = '0';
+    slot.style.filter = 'blur(6px)';
+
+    emblemVisible = true;
+
+    // Animate dots revealing ring by ring
+    let frame = 0;
+    const revealInterval = setInterval(() => {
+      emblemRevealProgress = frame * 2;
+      frame++;
+      if (frame > 60) clearInterval(revealInterval);
+    }, 16);
+
+    requestAnimationFrame(() => {
+      slot.style.transition = 'transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease-out, filter 0.6s ease-out';
+      slot.style.transform = 'scale(1) rotateZ(0deg)';
+      slot.style.opacity = '1';
+      slot.style.filter = 'blur(0)';
+      setTimeout(resolve, 500);
+    });
+  });
+}
+
+async function runTimeline() {
+  for (const item of timeline) {
+    if (item.type === 'pause') {
+      await new Promise(r => setTimeout(r, item.delay));
+    } else if (item.type === 'char') {
+      await new Promise(r => setTimeout(r, item.delay));
+      await revealChar(item.el);
+    } else if (item.type === 'emblem') {
+      await new Promise(r => setTimeout(r, item.delay));
+      await revealEmblemAnim();
+    }
+  }
+}
+
+setTimeout(runTimeline, 500);
+
+// ─── Mouse 3D tilt ───
+const logo3d = document.getElementById('logo3d');
+
+document.addEventListener('mousemove', (e) => {
+  const xRatio = (e.clientX / window.innerWidth - 0.5);
+  const yRatio = (e.clientY / window.innerHeight - 0.5);
+  logo3d.style.animation = 'none';
+  logo3d.style.transform = `rotateY(${xRatio * 22}deg) rotateX(${-yRatio * 15}deg)`;
+});
+
+document.addEventListener('mouseleave', () => {
+  logo3d.style.animation = 'floatScene 7s ease-in-out infinite';
+});
+</script>
+
+</body>
+</html>

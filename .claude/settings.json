@@ -1,0 +1,7 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://localhost:20128",
+    "ANTHROPIC_AUTH_TOKEN": "<sk-64a515acc6b09565-98a1bf-38c4f9b8>",
+    "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY": "antigravity/claude-sonnet-4-6"
+  }
+}

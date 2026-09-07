@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudFen 3D Logo Animation</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  perspective: 1000px;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.logo-wrapper {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cameraOrbit 11s ease-in-out forwards;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 80px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  transform-style: preserve-3d;
+}
+
+.letter {
+  color: #fff;
+  opacity: 0;
+  transform-style: preserve-3d;
+  text-shadow:
+    2px 2px 4px rgba(0,0,0,0.8),
+    0 0 20px rgba(255,255,255,0.1);
+  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+}
+
+.letter-c {
+  animation:
+    assembleC 1.5s ease-out 2s forwards,
+    rotate3d 1.5s ease-out 2s;
+  transform: translate3d(-300px, 100px, -200px) rotateX(30deg) rotateY(-50deg) rotateZ(20deg);
+}
+
+.letter-l {
+  animation:
+    assembleL 1.5s ease-out 2.5s forwards,
+    rotate3d 1.5s ease-out 2.5s;
+  transform: translate3d(-200px, -150px, 150px) rotateX(-40deg) rotateY(30deg) rotateZ(-10deg);
+}
+
+.letter-o {
+  animation:
+    assembleO 1.5s ease-out 3s forwards,
+    rotate3d 1.5s ease-out 3s;
+  transform: translate3d(0px, 200px, -150px) rotateX(20deg) rotateY(40deg) rotateZ(30deg);
+  position: relative;
+}
+
+.letter-u {
+  animation:
+    assembleU 1.5s ease-out 3.5s forwards,
+    rotate3d 1.5s ease-out 3.5s;
+  transform: translate3d(250px, -100px, 100px) rotateX(-30deg) rotateY(-40deg) rotateZ(20deg);
+}
+
+.letter-d {
+  animation:
+    assembleD 1.5s ease-out 4s forwards,
+    rotate3d 1.5s ease-out 4s;
+  transform: translate3d(350px, 50px, -250px) rotateX(50deg) rotateY(20deg) rotateZ(-30deg);
+}
+
+.emblem {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateZ(-400px);
+  width: 60px;
+  height: 60px;
+  opacity: 0;
+  animation:
+    emblemReveal 2s ease-out 0s forwards,
+    emblemRotate 2s linear 0s;
+}
+
+.emblem-circle {
+  width: 100%;
+  height: 100%;
+  border: 5px solid #4fd1c5;
+  border-radius: 50%;
+  position: relative;
+  box-shadow:
+    0 0 20px rgba(79, 209, 197, 0.6),
+    inset 0 0 20px rgba(79, 209, 197, 0.3);
+}
+
+.emblem-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #4fd1c5;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(79, 209, 197, 0.8);
+}
+
+.emblem-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: #4fd1c5;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(79, 209, 197, 1);
+}
+
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #4fd1c5;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: particleFloat 20s infinite;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border: 3px solid #4fd1c5;
+  border-radius: 50%;
+  opacity: 0;
+  animation: energyPulse 0.5s ease-out 6s;
+}
+
+.light-sweep {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(79, 209, 197, 0.3) 50%,
+    transparent 100%);
+  animation: lightSweep 1s ease-out 9s;
+  pointer-events: none;
+}
+
+@keyframes cameraOrbit {
+  0%, 70% { transform: translateZ(0) rotateY(0deg); }
+  82% { transform: translateZ(50px) rotateY(8deg); }
+  100% { transform: translateZ(50px) rotateY(0deg); }
+}
+
+@keyframes assembleC {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) rotateZ(0);
+  }
+}
+
+@keyframes assembleL {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) rotateZ(0);
+  }
+}
+
+@keyframes assembleO {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) rotateZ(0);
+  }
+}
+
+@keyframes assembleU {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) rotateZ(0);
+  }
+}
+
+@keyframes assembleD {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) rotateZ(0);
+  }
+}
+
+@keyframes emblemReveal {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateZ(-400px) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateZ(0) scale(1);
+  }
+}
+
+@keyframes emblemRotate {
+  from { transform: translate(-50%, -50%) translateZ(-400px) rotate(0deg); }
+  to { transform: translate(-50%, -50%) translateZ(0) rotate(720deg); }
+}
+
+@keyframes rotate3d {
+  from {
+    transform: translate3d(var(--tx), var(--ty), var(--tz))
+               rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz));
+  }
+  to {
+    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) rotateZ(0);
+  }
+}
+
+@keyframes energyPulse {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.5);
+  }
+}
+
+@keyframes lightSweep {
+  from { left: -100%; }
+  to { left: 100%; }
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate3d(var(--px), var(--py), var(--pz));
+    opacity: 0.1;
+  }
+}
+
+@keyframes finalGlow {
+  91%, 100% {
+    text-shadow:
+      2px 2px 4px rgba(0,0,0,0.8),
+      0 0 20px rgba(255,255,255,0.2),
+      0 0 40px rgba(79, 209, 197, 0.1);
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo-wrapper">
+    <div class="logo">
+      <span class="letter letter-c">C</span>
+      <span class="letter letter-l">l</span>
+      <div class="emblem-wrapper letter-o">
+        <div class="emblem">
+          <div class="emblem-circle">
+            <div class="emblem-center"></div>
+          </div>
+        </div>
+      </div>
+      <span class="letter letter-u">u</span>
+      <span class="letter letter-d">d</span>
+      <span class="letter letter-f">F</span>
+      <span class="letter letter-e">e</span>
+      <span class="letter letter-n">n</span>
+    </div>
+
+    <div class="pulse-ring"></div>
+  </div>
+
+  <div class="light-sweep"></div>
+
+  <div class="particles" id="particles"></div>
+</div>
+
+<script>
+// Generate emblem dots
+const emblem = document.querySelector('.emblem-circle');
+const dotCount = 16;
+const radiusInner = 15;
+const radiusOuter = 23;
+
+for (let i = 0; i < dotCount; i++) {
+  const angle = (i / dotCount) * Math.PI * 2;
+  const radius = i % 2 === 0 ? radiusInner : radiusOuter;
+  const x = Math.cos(angle) * radius;
+  const y = Math.sin(angle) * radius;
+
+  const dot = document.createElement('div');
+  dot.className = 'emblem-dot';
+  dot.style.left = `calc(50% + ${x}px)`;
+  dot.style.top = `calc(50% + ${y}px)`;
+  emblem.appendChild(dot);
+}
+
+// Generate particles
+const particlesContainer = document.getElementById('particles');
+const particleCount = 80;
+
+for (let i = 0; i < particleCount; i++) {
+  const particle = document.createElement('div');
+  particle.className = 'particle';
+
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+  const px = (Math.random() - 0.5) * 100;
+  const py = (Math.random() - 0.5) * 100;
+  const pz = (Math.random() - 0.5) * 100;
+  const delay = Math.random() * 10;
+
+  particle.style.left = x + 'px';
+  particle.style.top = y + 'px';
+  particle.style.setProperty('--px', px + 'px');
+  particle.style.setProperty('--py', py + 'px');
+  particle.style.setProperty('--pz', pz + 'px');
+  particle.style.animationDelay = delay + 's';
+
+  particlesContainer.appendChild(particle);
+}
+
+// Add subtle continuous rotation to emblem after assembly
+setTimeout(() => {
+  const emblemEl = document.querySelector('.emblem');
+  emblemEl.style.animation += ', gentleRotate 10s linear 6s infinite';
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes gentleRotate {
+      from { transform: translate(-50%, -50%) translateZ(0) rotate(0deg); }
+      to { transform: translate(-50%, -50%) translateZ(0) rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+}, 6000);
+
+// Flash effect at pulse
+setTimeout(() => {
+  document.body.style.transition = 'background 0.1s';
+  document.body.style.background = '#001a1a';
+  setTimeout(() => {
+    document.body.style.background = '#000';
+  }, 100);
+}, 6000);
+
+console.log('CloudFen 3D Logo Animation - No external libraries required');
+</script>
+
+</body>
+</html>

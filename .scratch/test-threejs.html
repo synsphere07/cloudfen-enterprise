@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Three.js Test</title>
+<style>
+body { margin: 0; background: #000; color: #4fd1c5; font-family: monospace; }
+#info { position: fixed; top: 20px; left: 20px; z-index: 10; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<div id="info">Loading Three.js...</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+<script>
+const info = document.getElementById('info');
+
+if (typeof THREE === 'undefined') {
+  info.textContent = 'ERROR: Three.js failed to load from CDN';
+  info.style.color = '#ff6b6b';
+} else {
+  info.textContent = 'Three.js loaded successfully! Version: ' + THREE.REVISION;
+
+  // Create a simple test scene
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshBasicMaterial({ color: 0x4fd1c5 });
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+
+  camera.position.z = 5;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+
+  animate();
+  setTimeout(() => info.style.display = 'none', 2000);
+}
+</script>
+</body>
+</html>
