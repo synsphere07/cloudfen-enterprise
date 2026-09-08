@@ -5,6 +5,14 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // ============================================================================
+// COLOR CONSTANTS MATCHING REFERENCE SPECIFICATION
+// ============================================================================
+// Base: #080A0C, #111417, #171A1D, #22262A (Dark Graphite / Charcoal)
+// Accent: #FFB13B, #FF8C22, #FFC15A (Warm Amber / Soft Orange / Golden Highlights)
+// Secondary: #DDE7EA (Subtle Neutral-Cool Highlights)
+// Foliage: #1b2e23, #15241b (Architectural Indoor Planters)
+
+// ============================================================================
 // 1. FLOATING 3D SMOKED GLASS CUBE WITH GLOWING AMBER EDGES
 // ============================================================================
 interface GlowingCubeProps {
@@ -16,17 +24,19 @@ interface GlowingCubeProps {
   floatOffset?: number;
   edgeColor?: string;
   glowIntensity?: number;
+  hasPointLight?: boolean;
 }
 
 const GlowingCube: React.FC<GlowingCubeProps> = ({
   position,
   size,
-  rotSpeed = [0.004, 0.007, 0.003],
-  floatSpeed = 1.0,
-  floatAmplitude = 0.25,
+  rotSpeed = [0.003, 0.006, 0.002],
+  floatSpeed = 0.85,
+  floatAmplitude = 0.22,
   floatOffset = 0,
-  edgeColor = '#f59e0b',
-  glowIntensity = 2.5,
+  edgeColor = '#FFB13B',
+  glowIntensity = 3.0,
+  hasPointLight = false,
 }) => {
   const meshRef = useRef<THREE.Group>(null);
   const initialY = position[1];
@@ -41,12 +51,12 @@ const GlowingCube: React.FC<GlowingCubeProps> = ({
     if (!meshRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    // Multi-axis smooth rotation
+    // Smooth multi-axis slow rotation
     meshRef.current.rotation.x += rotSpeed[0];
     meshRef.current.rotation.y += rotSpeed[1];
     meshRef.current.rotation.z += rotSpeed[2];
 
-    // Floating levitation
+    // Subtle floating levitation
     meshRef.current.position.y = initialY + Math.sin(t * floatSpeed + floatOffset) * floatAmplitude;
   });
 
@@ -55,45 +65,54 @@ const GlowingCube: React.FC<GlowingCubeProps> = ({
       {/* Dark Smoked Metallic Glass Body */}
       <mesh geometry={boxGeo}>
         <meshPhysicalMaterial
-          color="#121110"
-          roughness={0.15}
-          metalness={0.9}
-          transmission={0.4}
-          thickness={0.8}
+          color="#111417"
+          roughness={0.12}
+          metalness={0.88}
+          transmission={0.45}
+          thickness={1.0}
           transparent={true}
           opacity={0.92}
           reflectivity={0.9}
-          clearcoat={0.8}
-          clearcoatRoughness={0.1}
+          clearcoat={0.9}
+          clearcoatRoughness={0.08}
         />
       </mesh>
 
-      {/* Sharp Glowing Amber Edges */}
+      {/* Primary Intense Glowing Amber Edge Lines */}
       <lineSegments geometry={edgesGeo}>
         <lineBasicMaterial
           color={edgeColor}
-          linewidth={2}
           transparent={true}
           opacity={0.95}
           blending={THREE.AdditiveBlending}
         />
       </lineSegments>
 
-      {/* Secondary Inner Edge Glow */}
-      <lineSegments geometry={edgesGeo} scale={[1.008, 1.008, 1.008]}>
+      {/* Secondary Outer Halo Edge Glow */}
+      <lineSegments geometry={edgesGeo} scale={[1.012, 1.012, 1.012]}>
         <lineBasicMaterial
-          color="#fbbf24"
+          color="#FFC15A"
           transparent={true}
-          opacity={0.6 * glowIntensity}
+          opacity={0.5 * glowIntensity}
           blending={THREE.AdditiveBlending}
         />
       </lineSegments>
+
+      {/* Optional Soft Warm Point Light from Cube Core */}
+      {hasPointLight && (
+        <pointLight
+          color="#FFB13B"
+          intensity={2.8}
+          distance={8}
+          decay={2}
+        />
+      )}
     </group>
   );
 };
 
 // ============================================================================
-// 2. SCATTERED AMBIENT FLOATING CUBES (Depth Field)
+// 2. SCATTERED AMBIENT FLOATING CUBES (Depth Field Placement)
 // ============================================================================
 const AmbientFloatingCubes: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
   const cubesData = useMemo(() => {
@@ -104,64 +123,78 @@ const AmbientFloatingCubes: React.FC<{ isMobile?: boolean }> = ({ isMobile = fal
       floatSpeed: number;
       floatAmp: number;
       offset: number;
+      hasLight?: boolean;
     }> = [];
 
-    // Prominent Hero Left Cube (visible on the left side of hero, matching reference)
+    // 1. Prominent Hero Left Cube (Matching Reference Image Position & Size)
     list.push({
-      pos: [-10.5, 2.2, -2],
-      size: 2.8,
-      rotSpeed: [0.005, 0.008, 0.003],
-      floatSpeed: 0.9,
-      floatAmp: 0.3,
-      offset: 0,
-    });
-
-    // Secondary mid-left cubes
-    list.push({
-      pos: [-14.5, 5.5, -8],
-      size: 1.8,
-      rotSpeed: [0.006, -0.007, 0.004],
-      floatSpeed: 0.7,
-      floatAmp: 0.25,
-      offset: 1.2,
-    });
-
-    list.push({
-      pos: [-7.0, 6.0, -12],
-      size: 1.4,
-      rotSpeed: [-0.004, 0.006, -0.003],
-      floatSpeed: 1.1,
-      floatAmp: 0.2,
-      offset: 2.5,
-    });
-
-    list.push({
-      pos: [-12.0, -2.5, -6],
-      size: 1.6,
-      rotSpeed: [0.007, 0.005, -0.004],
+      pos: isMobile ? [-5.5, 3.5, -4] : [-10.8, 2.5, -2.5],
+      size: isMobile ? 1.8 : 2.9,
+      rotSpeed: [0.004, 0.007, 0.003],
       floatSpeed: 0.8,
-      floatAmp: 0.22,
-      offset: 3.8,
+      floatAmp: 0.28,
+      offset: 0,
+      hasLight: true,
     });
 
-    // Background and right-depth cubes (smaller, non-interfering)
-    const count = isMobile ? 4 : 10;
+    // 2. Secondary Mid-Left Cubes
+    list.push({
+      pos: [-14.8, 5.8, -8],
+      size: 1.9,
+      rotSpeed: [0.005, -0.006, 0.004],
+      floatSpeed: 0.65,
+      floatAmp: 0.22,
+      offset: 1.4,
+    });
+
+    list.push({
+      pos: [-12.2, -2.8, -6],
+      size: 1.5,
+      rotSpeed: [-0.004, 0.005, -0.003],
+      floatSpeed: 0.9,
+      floatAmp: 0.18,
+      offset: 2.8,
+    });
+
+    // 3. Right-Flanking Cubes around Cloud Sculpture
+    list.push({
+      pos: [14.8, 5.2, -7],
+      size: 1.6,
+      rotSpeed: [0.006, 0.004, -0.005],
+      floatSpeed: 0.75,
+      floatAmp: 0.2,
+      offset: 3.2,
+    });
+
+    list.push({
+      pos: [15.5, -1.8, -6],
+      size: 1.3,
+      rotSpeed: [-0.005, 0.006, 0.003],
+      floatSpeed: 0.85,
+      floatAmp: 0.16,
+      offset: 4.5,
+    });
+
+    // 4. Tiny Distant Background Cubes (Non-interfering, Deep Depth)
+    const count = isMobile ? 3 : 8;
     for (let i = 0; i < count; i++) {
-      const x = (Math.random() - 0.5) * 36;
-      const y = -4 + Math.random() * 12;
-      const z = -10 - Math.random() * 20;
-      const s = 0.6 + Math.random() * 1.0;
+      // Avoid center x (keep center between -3 and 3 clear)
+      const side = i % 2 === 0 ? -1 : 1;
+      const x = side * (5.5 + Math.random() * 12);
+      const y = -3 + Math.random() * 10;
+      const z = -12 - Math.random() * 16;
+      const s = 0.5 + Math.random() * 0.8;
 
       list.push({
         pos: [x, y, z],
         size: s,
         rotSpeed: [
-          (Math.random() - 0.5) * 0.01,
-          (Math.random() - 0.5) * 0.012,
           (Math.random() - 0.5) * 0.008,
+          (Math.random() - 0.5) * 0.01,
+          (Math.random() - 0.5) * 0.006,
         ],
-        floatSpeed: 0.6 + Math.random() * 0.8,
-        floatAmp: 0.15 + Math.random() * 0.2,
+        floatSpeed: 0.5 + Math.random() * 0.6,
+        floatAmp: 0.12 + Math.random() * 0.15,
         offset: Math.random() * Math.PI * 2,
       });
     }
@@ -180,6 +213,7 @@ const AmbientFloatingCubes: React.FC<{ isMobile?: boolean }> = ({ isMobile = fal
           floatSpeed={cube.floatSpeed}
           floatAmplitude={cube.floatAmp}
           floatOffset={cube.offset}
+          hasPointLight={cube.hasLight}
         />
       ))}
     </group>
@@ -187,9 +221,9 @@ const AmbientFloatingCubes: React.FC<{ isMobile?: boolean }> = ({ isMobile = fal
 };
 
 // ============================================================================
-// 3. MAIN 3D FLOATING CLOUD HOLOGRAPHIC OBJECT (Hero Right Side)
+// 3. MAIN 3D CLOUD SCULPTURE WITH CONSTELLATION & ORBITAL RINGS
 // ============================================================================
-const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
+const FloatingCloudSculpture: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
   const cloudGroupRef = useRef<THREE.Group>(null);
   const nodesRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
@@ -197,24 +231,24 @@ const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = fals
   const ring2Ref = useRef<THREE.Mesh>(null);
   const ring3Ref = useRef<THREE.Mesh>(null);
 
-  // Cloud position: Right side of screen, slightly elevated
-  const basePosition: [number, number, number] = isMobile ? [3.5, 3.0, -6] : [9.8, 3.2, -3.5];
-  const cloudScale = isMobile ? 0.75 : 1.15;
+  // Cloud position: Right side of screen, elevated above floor (Matching Reference)
+  const basePosition: [number, number, number] = isMobile ? [3.8, 3.2, -6] : [9.6, 3.2, -3.2];
+  const cloudScale = isMobile ? 0.72 : 1.18;
 
-  // 1. Constellation / Digital Network inside Cloud
-  const { nodePositions, nodeColors, linePositions, lineIndices } = useMemo(() => {
-    const numNodes = isMobile ? 32 : 55;
+  // 1. Internal Constellation Digital Network Nodes & Luminous Connections
+  const { nodePositions, nodeColors, linePositions } = useMemo(() => {
+    const numNodes = isMobile ? 35 : 62;
     const positions: number[] = [];
     const colors: number[] = [];
 
-    // Helper: generate nodes inside cloud bounding lobes
+    // Cloud lobe boundary approximation
     const lobes = [
-      { center: [0, 0, 0], r: 2.2 },
-      { center: [-1.7, -0.4, 0.2], r: 1.6 },
-      { center: [1.8, -0.3, 0.1], r: 1.7 },
-      { center: [-0.4, 1.3, -0.1], r: 1.6 },
-      { center: [1.1, 1.1, 0.2], r: 1.3 },
-      { center: [0, -0.9, 0], r: 1.5 },
+      { center: [0, 0, 0], r: 2.3 },
+      { center: [-1.85, -0.3, 0.1], r: 1.65 },
+      { center: [1.9, -0.25, 0.1], r: 1.8 },
+      { center: [-0.5, 1.4, -0.05], r: 1.7 },
+      { center: [1.2, 1.2, 0.1], r: 1.45 },
+      { center: [0, -1.0, 0], r: 1.55 },
     ];
 
     for (let i = 0; i < numNodes; i++) {
@@ -223,25 +257,24 @@ const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = fals
       const v = Math.random();
       const theta = u * 2.0 * Math.PI;
       const phi = Math.acos(2.0 * v - 1.0);
-      const r = Math.cbrt(Math.random()) * (lobe.r * 0.75);
+      const r = Math.cbrt(Math.random()) * (lobe.r * 0.78);
 
       const sinPhi = Math.sin(phi);
       const x = lobe.center[0] + r * sinPhi * Math.cos(theta);
       const y = lobe.center[1] + r * sinPhi * Math.sin(theta);
-      const z = lobe.center[2] + r * Math.cos(phi) * 0.65; // flatten slightly in z
+      const z = lobe.center[2] + r * Math.cos(phi) * 0.65; // depth compression
 
       positions.push(x, y, z);
 
-      // Gold to warm amber colors
-      const isWarm = Math.random() > 0.3;
-      if (isWarm) {
-        colors.push(0.98, 0.75, 0.2); // amber gold
+      // Warm Golden Amber vs Bright Neutral-White Node Colors
+      if (Math.random() > 0.35) {
+        colors.push(1.0, 0.7, 0.23); // #FFB13B
       } else {
-        colors.push(1.0, 0.95, 0.7); // bright warm white
+        colors.push(1.0, 0.96, 0.85); // Bright Golden White
       }
     }
 
-    // Connect close nodes with lines
+    // Connect close nodes with glowing lines
     const linePairs: number[] = [];
     for (let i = 0; i < numNodes; i++) {
       for (let j = i + 1; j < numNodes; j++) {
@@ -250,7 +283,7 @@ const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = fals
         const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
         const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-        if (dist < 1.7) {
+        if (dist < 1.75) {
           linePairs.push(
             positions[i * 3],
             positions[i * 3 + 1],
@@ -267,28 +300,27 @@ const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = fals
       nodePositions: new Float32Array(positions),
       nodeColors: new Float32Array(colors),
       linePositions: new Float32Array(linePairs),
-      lineIndices: null,
     };
   }, [isMobile]);
 
-  // 2. Custom Outer Fresnel Glow & Smoked Glass Materials for Cloud Lobes
+  // 2. Multi-Lobe Parametric Mesh Geometries for Smooth Cloud Silhouette
   const cloudLobeGeometries = useMemo(() => {
     return [
-      { geo: new THREE.SphereGeometry(2.3, 32, 24), pos: [0, 0, 0] as [number, number, number], scale: [1.1, 0.9, 0.75] as [number, number, number] },
-      { geo: new THREE.SphereGeometry(1.65, 28, 20), pos: [-1.75, -0.35, 0.15] as [number, number, number], scale: [1.0, 0.9, 0.75] as [number, number, number] },
-      { geo: new THREE.SphereGeometry(1.85, 28, 20), pos: [1.85, -0.3, 0.1] as [number, number, number], scale: [1.0, 0.9, 0.75] as [number, number, number] },
-      { geo: new THREE.SphereGeometry(1.7, 28, 20), pos: [-0.4, 1.35, -0.1] as [number, number, number], scale: [1.0, 0.95, 0.75] as [number, number, number] },
-      { geo: new THREE.SphereGeometry(1.4, 24, 18), pos: [1.2, 1.15, 0.15] as [number, number, number], scale: [1.0, 0.9, 0.75] as [number, number, number] },
-      { geo: new THREE.SphereGeometry(1.5, 24, 18), pos: [0, -0.95, 0] as [number, number, number], scale: [1.5, 0.65, 0.75] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(2.35, 36, 28), pos: [0, 0, 0] as [number, number, number], scale: [1.15, 0.92, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.7, 32, 24), pos: [-1.85, -0.32, 0.12] as [number, number, number], scale: [1.02, 0.92, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.88, 32, 24), pos: [1.9, -0.28, 0.1] as [number, number, number], scale: [1.02, 0.92, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.72, 32, 24), pos: [-0.48, 1.4, -0.06] as [number, number, number], scale: [1.0, 0.95, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.42, 28, 20), pos: [1.22, 1.2, 0.12] as [number, number, number], scale: [1.0, 0.9, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.55, 28, 20), pos: [0, -1.0, 0] as [number, number, number], scale: [1.55, 0.65, 0.78] as [number, number, number] },
     ];
   }, []);
 
-  // 3. Glowing Orbital Rings
+  // 3. Elegant Thin 3D Orbital Torus Rings
   const ringGeometries = useMemo(() => {
     return {
-      ring1: new THREE.TorusGeometry(4.2, 0.032, 16, 100),
-      ring2: new THREE.TorusGeometry(4.9, 0.024, 16, 100),
-      ring3: new THREE.TorusGeometry(4.5, 0.028, 16, 100),
+      ring1: new THREE.TorusGeometry(4.3, 0.038, 16, 120),
+      ring2: new THREE.TorusGeometry(5.0, 0.028, 16, 120),
+      ring3: new THREE.TorusGeometry(4.6, 0.032, 16, 120),
     };
   }, []);
 
@@ -296,70 +328,70 @@ const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = fals
     const t = state.clock.getElapsedTime();
 
     if (cloudGroupRef.current) {
-      // Smooth vertical floating bob
-      cloudGroupRef.current.position.y = basePosition[1] + Math.sin(t * 0.9) * 0.32;
-      // Gentle micro-rotation
-      cloudGroupRef.current.rotation.y = Math.sin(t * 0.4) * 0.08;
-      cloudGroupRef.current.rotation.x = Math.cos(t * 0.3) * 0.04;
+      // Gentle vertical floating levitation
+      cloudGroupRef.current.position.y = basePosition[1] + Math.sin(t * 0.85) * 0.28;
+      // Extremely subtle rotation
+      cloudGroupRef.current.rotation.y = Math.sin(t * 0.35) * 0.07;
+      cloudGroupRef.current.rotation.x = Math.cos(t * 0.28) * 0.035;
     }
 
-    // Rotate Orbital Rings at differential speeds
+    // Orbital Rings Slow Continuous Rotation at Differential Angles & Speeds
     if (ring1Ref.current) {
-      ring1Ref.current.rotation.z = t * 0.22;
-      ring1Ref.current.rotation.x = 0.5 + Math.sin(t * 0.15) * 0.05;
+      ring1Ref.current.rotation.z = t * 0.16;
+      ring1Ref.current.rotation.x = 0.52 + Math.sin(t * 0.12) * 0.04;
     }
     if (ring2Ref.current) {
-      ring2Ref.current.rotation.z = -t * 0.18;
-      ring2Ref.current.rotation.y = 0.6 + Math.cos(t * 0.12) * 0.06;
+      ring2Ref.current.rotation.z = -t * 0.13;
+      ring2Ref.current.rotation.y = 0.64 + Math.cos(t * 0.1) * 0.05;
     }
     if (ring3Ref.current) {
-      ring3Ref.current.rotation.z = t * 0.14;
-      ring3Ref.current.rotation.x = -0.4 + Math.sin(t * 0.18) * 0.04;
+      ring3Ref.current.rotation.z = t * 0.11;
+      ring3Ref.current.rotation.x = -0.42 + Math.sin(t * 0.15) * 0.03;
     }
 
-    // Node twinkling pulse
+    // Dynamic node twinkle
     if (nodesRef.current) {
       const mat = nodesRef.current.material as THREE.PointsMaterial;
       if (mat) {
-        mat.size = 0.12 + Math.sin(t * 2.5) * 0.03;
+        mat.size = 0.13 + Math.sin(t * 2.2) * 0.025;
       }
     }
   });
 
   return (
     <group ref={cloudGroupRef} position={basePosition} scale={cloudScale}>
-      {/* Central Warm Point Light casting ambient glow through cloud */}
-      <pointLight color="#f59e0b" intensity={4.5} distance={18} decay={2} />
-      <pointLight color="#fbbf24" intensity={2.0} distance={8} decay={2} />
+      {/* Central Core Warm Amber Point Lights */}
+      <pointLight color="#FF9F1C" intensity={5.2} distance={18} decay={2} />
+      <pointLight color="#FFC15A" intensity={2.6} distance={9} decay={2} />
 
       {/* Cloud Outer Glass Shell Lobes */}
       {cloudLobeGeometries.map((lobe, idx) => (
         <group key={idx} position={lobe.pos} scale={lobe.scale}>
-          {/* Smoked Semi-Transparent Glass Body */}
+          {/* Dark Smoky Semi-Transparent Glass Body */}
           <mesh geometry={lobe.geo}>
             <meshPhysicalMaterial
-              color="#1a1816"
-              roughness={0.12}
-              metalness={0.4}
-              transmission={0.65}
-              thickness={1.2}
+              color="#141210"
+              roughness={0.1}
+              metalness={0.45}
+              transmission={0.68}
+              thickness={1.4}
               transparent={true}
-              opacity={0.7}
-              reflectivity={0.8}
+              opacity={0.78}
+              reflectivity={0.92}
               clearcoat={1.0}
-              clearcoatRoughness={0.1}
+              clearcoatRoughness={0.06}
             />
           </mesh>
 
-          {/* Intense Warm Amber Neon Rim Glow Contour */}
-          <mesh geometry={lobe.geo} scale={[1.025, 1.025, 1.025]}>
+          {/* Intense Golden-Amber Perimeter Rim Glow Contour */}
+          <mesh geometry={lobe.geo} scale={[1.026, 1.026, 1.026]}>
             <meshStandardMaterial
-              color="#fbbf24"
-              emissive="#f59e0b"
-              emissiveIntensity={2.8}
+              color="#FFC15A"
+              emissive="#FF8C22"
+              emissiveIntensity={3.4}
               wireframe={true}
               transparent={true}
-              opacity={0.35}
+              opacity={0.4}
               blending={THREE.AdditiveBlending}
             />
           </mesh>
@@ -388,44 +420,44 @@ const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = fals
           <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
         </bufferGeometry>
         <lineBasicMaterial
-          color="#f59e0b"
+          color="#FFB13B"
           transparent={true}
-          opacity={0.45}
+          opacity={0.52}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
       </lineSegments>
 
-      {/* Orbital Ring 1 */}
-      <mesh ref={ring1Ref} geometry={ringGeometries.ring1} rotation={[0.5, 0.2, 0]}>
+      {/* Orbital Ring 1 (Passing in front and behind) */}
+      <mesh ref={ring1Ref} geometry={ringGeometries.ring1} rotation={[0.55, 0.22, 0]}>
         <meshStandardMaterial
-          color="#fbbf24"
-          emissive="#f59e0b"
+          color="#FFC15A"
+          emissive="#FF8C22"
           emissiveIntensity={3.2}
-          roughness={0.2}
-          metalness={0.9}
+          roughness={0.18}
+          metalness={0.92}
         />
       </mesh>
 
       {/* Orbital Ring 2 */}
-      <mesh ref={ring2Ref} geometry={ringGeometries.ring2} rotation={[-0.4, 0.6, 0.3]}>
+      <mesh ref={ring2Ref} geometry={ringGeometries.ring2} rotation={[-0.42, 0.62, 0.32]}>
         <meshStandardMaterial
-          color="#fbbf24"
-          emissive="#d97706"
-          emissiveIntensity={2.8}
-          roughness={0.2}
-          metalness={0.9}
+          color="#FFB13B"
+          emissive="#FF8C22"
+          emissiveIntensity={2.9}
+          roughness={0.18}
+          metalness={0.92}
         />
       </mesh>
 
       {/* Orbital Ring 3 */}
-      <mesh ref={ring3Ref} geometry={ringGeometries.ring3} rotation={[0.3, -0.5, 0.7]}>
+      <mesh ref={ring3Ref} geometry={ringGeometries.ring3} rotation={[0.32, -0.48, 0.72]}>
         <meshStandardMaterial
-          color="#fde68a"
-          emissive="#f59e0b"
-          emissiveIntensity={2.5}
-          roughness={0.2}
-          metalness={0.9}
+          color="#FFE2A0"
+          emissive="#FFB13B"
+          emissiveIntensity={2.6}
+          roughness={0.18}
+          metalness={0.92}
         />
       </mesh>
     </group>
@@ -433,27 +465,41 @@ const FloatingCloudObject: React.FC<{ isMobile?: boolean }> = ({ isMobile = fals
 };
 
 // ============================================================================
-// 4. ARCHITECTURAL HEADQUARTERS INTERIOR (Pillars, Floor, Glass Mullions, Lighting)
+// 4. ARCHITECTURAL HEADQUARTERS ENVIRONMENT (Columns, Reflective Floor, Planters)
 // ============================================================================
 const ArchitecturalEnvironment: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
-  // Floor and Pillar Geometries
-  const { floorGeo, pillarGeo, lightStripGeo, ledgeGeo } = useMemo(() => {
+  // Geometries for Architecture Elements
+  const { floorGeo, pillarGeo, lightStripGeo, glassMullionGeo, ledgeGeo, planterBoxGeo, plantBushGeo } = useMemo(() => {
     return {
-      floorGeo: new THREE.PlaneGeometry(90, 90, 20, 20),
+      floorGeo: new THREE.PlaneGeometry(90, 90, 24, 24),
       pillarGeo: new THREE.BoxGeometry(1.6, 24, 1.6),
       lightStripGeo: new THREE.BoxGeometry(0.12, 22, 0.12),
-      ledgeGeo: new THREE.BoxGeometry(18, 0.6, 3),
+      glassMullionGeo: new THREE.BoxGeometry(0.15, 24, 0.15),
+      ledgeGeo: new THREE.BoxGeometry(20, 0.7, 3.5),
+      planterBoxGeo: new THREE.BoxGeometry(5.5, 0.9, 1.8),
+      plantBushGeo: new THREE.SphereGeometry(1.1, 14, 10),
     };
   }, []);
 
+  // Structural Column Positions (Spanning deep architectural perspective)
   const pillars = useMemo(() => {
     return [
-      { pos: [-18, 4, -22] as [number, number, number] },
-      { pos: [-11, 4, -26] as [number, number, number] },
-      { pos: [-3, 4, -30] as [number, number, number] },
-      { pos: [5, 4, -30] as [number, number, number] },
-      { pos: [13, 4, -26] as [number, number, number] },
-      { pos: [20, 4, -22] as [number, number, number] },
+      { pos: [-19, 4.5, -22] as [number, number, number] },
+      { pos: [-12, 4.5, -26] as [number, number, number] },
+      { pos: [-4, 4.5, -30] as [number, number, number] },
+      { pos: [4, 4.5, -30] as [number, number, number] },
+      { pos: [12, 4.5, -26] as [number, number, number] },
+      { pos: [19, 4.5, -22] as [number, number, number] },
+    ];
+  }, []);
+
+  // Subtle Indoor Plants in Distant Background / Planters
+  const plants = useMemo(() => {
+    return [
+      { pos: [-13.5, -4.2, -18] as [number, number, number], scale: [1.2, 0.9, 1.0] as [number, number, number] },
+      { pos: [-15.2, -4.1, -18.5] as [number, number, number], scale: [0.9, 1.1, 0.9] as [number, number, number] },
+      { pos: [13.5, -4.2, -18] as [number, number, number], scale: [1.2, 0.9, 1.0] as [number, number, number] },
+      { pos: [15.2, -4.1, -18.5] as [number, number, number], scale: [0.9, 1.1, 0.9] as [number, number, number] },
     ];
   }, []);
 
@@ -462,68 +508,94 @@ const ArchitecturalEnvironment: React.FC<{ isMobile?: boolean }> = ({ isMobile =
       {/* 1. Polished Dark Reflective Architectural Floor */}
       <mesh geometry={floorGeo} position={[0, -5.6, -15]} rotation={[-Math.PI / 2, 0, 0]}>
         <meshStandardMaterial
-          color="#100e0d"
-          roughness={0.22}
-          metalness={0.88}
+          color="#0c0e11"
+          roughness={0.2}
+          metalness={0.9}
         />
       </mesh>
 
-      {/* Floor Ambient Specular Warm Accent */}
+      {/* Ambient Warm Golden Specular Floor Reflection Pool */}
       <mesh geometry={floorGeo} position={[0, -5.58, -15]} rotation={[-Math.PI / 2, 0, 0]}>
         <meshBasicMaterial
           color="#78350f"
           transparent={true}
-          opacity={0.06}
+          opacity={0.07}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* 2. Vertical Architectural Glass-and-Metal Pillars */}
+      {/* 2. Vertical Dark Graphite Architectural Pillars with Embedded Warm LED Strips */}
       {pillars.map((pillar, idx) => (
         <group key={idx} position={pillar.pos}>
-          {/* Main Dark Graphite Pillar */}
+          {/* Main Dark Metallic Graphite Column */}
           <mesh geometry={pillarGeo}>
             <meshStandardMaterial
-              color="#171513"
-              roughness={0.35}
-              metalness={0.8}
+              color="#171A1D"
+              roughness={0.3}
+              metalness={0.85}
             />
           </mesh>
 
-          {/* Embedded Warm Amber Vertical LED Light Strip */}
+          {/* Embedded Warm Amber Vertical LED Channel */}
           <mesh geometry={lightStripGeo} position={[0, 0, 0.85]}>
             <meshBasicMaterial
-              color="#fbbf24"
+              color="#FFB13B"
               transparent={true}
-              opacity={0.7}
+              opacity={0.75}
               blending={THREE.AdditiveBlending}
             />
           </mesh>
         </group>
       ))}
 
-      {/* 3. Distant Architectural Platforms & Planter Ledges with Warm Accents */}
-      <mesh geometry={ledgeGeo} position={[-12, -4.5, -18]}>
-        <meshStandardMaterial color="#141210" roughness={0.4} metalness={0.7} />
+      {/* 3. Distant Architectural Glass Panel Mullions */}
+      <mesh geometry={glassMullionGeo} position={[-8, 4.5, -28]}>
+        <meshStandardMaterial color="#22262A" roughness={0.2} metalness={0.9} />
+      </mesh>
+      <mesh geometry={glassMullionGeo} position={[8, 4.5, -28]}>
+        <meshStandardMaterial color="#22262A" roughness={0.2} metalness={0.9} />
       </mesh>
 
-      <mesh geometry={ledgeGeo} position={[12, -4.5, -18]}>
-        <meshStandardMaterial color="#141210" roughness={0.4} metalness={0.7} />
+      {/* 4. Distant Architectural Ledges & Planter Boxes */}
+      <mesh geometry={ledgeGeo} position={[-14, -4.8, -18]}>
+        <meshStandardMaterial color="#111417" roughness={0.35} metalness={0.75} />
+      </mesh>
+      <mesh geometry={ledgeGeo} position={[14, -4.8, -18]}>
+        <meshStandardMaterial color="#111417" roughness={0.35} metalness={0.75} />
       </mesh>
 
-      {/* Warm Downlights on Distant Architectural Ledges */}
-      <pointLight position={[-12, -3.5, -16]} color="#f59e0b" intensity={1.5} distance={12} />
-      <pointLight position={[12, -3.5, -16]} color="#f59e0b" intensity={1.8} distance={14} />
+      {/* Planter Boxes */}
+      <mesh geometry={planterBoxGeo} position={[-14, -4.4, -18]}>
+        <meshStandardMaterial color="#171A1D" roughness={0.4} metalness={0.6} />
+      </mesh>
+      <mesh geometry={planterBoxGeo} position={[14, -4.4, -18]}>
+        <meshStandardMaterial color="#171A1D" roughness={0.4} metalness={0.6} />
+      </mesh>
+
+      {/* Subtle Indoor Botanical Foliage in Planters */}
+      {plants.map((plant, idx) => (
+        <mesh key={idx} geometry={plantBushGeo} position={plant.pos} scale={plant.scale}>
+          <meshStandardMaterial
+            color="#1b2e23"
+            roughness={0.65}
+            metalness={0.15}
+          />
+        </mesh>
+      ))}
+
+      {/* Warm Ambient Downlights on Architectural Ledges */}
+      <pointLight position={[-14, -3.2, -16]} color="#FFB13B" intensity={1.8} distance={12} decay={2} />
+      <pointLight position={[14, -3.2, -16]} color="#FFB13B" intensity={2.0} distance={14} decay={2} />
     </group>
   );
 };
 
 // ============================================================================
-// 5. FLOATING GOLDEN AMBER ATMOSPHERIC LIGHT MOTES (Luminous Dust Particles)
+// 5. ATMOSPHERIC GOLDEN AMBER LIGHT MOTES (Luminous Drifting Particles)
 // ============================================================================
-const AtmosphericAmberParticles: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
+const AtmosphericAmberMotes: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
   const pointsRef = useRef<THREE.Points>(null);
-  const count = isMobile ? 120 : 280;
+  const count = isMobile ? 90 : 220;
 
   const { positions, sizes, speeds } = useMemo(() => {
     const pos = new Float32Array(count * 3);
@@ -533,10 +605,10 @@ const AtmosphericAmberParticles: React.FC<{ isMobile?: boolean }> = ({ isMobile 
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 44;
       pos[i * 3 + 1] = -5 + Math.random() * 20;
-      pos[i * 3 + 2] = 2 - Math.random() * 32;
+      pos[i * 3 + 2] = 2 - Math.random() * 30;
 
-      sz[i] = 1.2 + Math.random() * 2.2;
-      sp[i] = 0.4 + Math.random() * 0.8;
+      sz[i] = 1.1 + Math.random() * 2.0;
+      sp[i] = 0.35 + Math.random() * 0.7;
     }
 
     return { positions: pos, sizes: sz, speeds: sp };
@@ -557,15 +629,15 @@ const AtmosphericAmberParticles: React.FC<{ isMobile?: boolean }> = ({ isMobile 
 
         void main() {
           vec3 pos = position;
-          pos.y += mod(uTime * aSpeed * 0.4, 20.0) - 5.0;
-          pos.x += sin(uTime * 0.5 + position.y) * 0.3;
+          pos.y += mod(uTime * aSpeed * 0.35, 20.0) - 5.0;
+          pos.x += sin(uTime * 0.45 + position.y) * 0.25;
 
-          float twinkle = sin(uTime * 2.0 + position.x * 3.0) * 0.35 + 0.65;
-          vAlpha = twinkle * 0.85;
+          float twinkle = sin(uTime * 1.8 + position.x * 2.5) * 0.35 + 0.65;
+          vAlpha = twinkle * 0.8;
 
           vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
           gl_Position = projectionMatrix * mvPosition;
-          gl_PointSize = (aSize * (220.0 / -mvPosition.z)) * uPixelRatio;
+          gl_PointSize = (aSize * (200.0 / -mvPosition.z)) * uPixelRatio;
         }
       `,
       fragmentShader: `
@@ -577,8 +649,8 @@ const AtmosphericAmberParticles: React.FC<{ isMobile?: boolean }> = ({ isMobile 
           if (dist > 0.5) discard;
 
           float intensity = smoothstep(0.5, 0.05, dist);
-          // Warm Golden-Amber Luminous Glow
-          gl_FragColor = vec4(1.0, 0.82, 0.35, intensity * vAlpha);
+          // Warm Golden Amber Luminous Falloff (#FFB13B)
+          gl_FragColor = vec4(1.0, 0.76, 0.32, intensity * vAlpha);
         }
       `,
       transparent: true,
@@ -610,7 +682,7 @@ const AtmosphericAmberParticles: React.FC<{ isMobile?: boolean }> = ({ isMobile 
 };
 
 // ============================================================================
-// 6. INTERACTIVE MOUSE & SCROLL PARALLAX CAMERA RIG
+// 6. LUXURY PARALLAX CAMERA RIG (Passive Smooth Mouse Easing & Scroll Parallax)
 // ============================================================================
 const LuxuryParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -656,11 +728,11 @@ const LuxuryParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children }
     }
 
     // Subtle, restrained luxury mouse parallax
-    const targetMouseX = (state.pointer.x * Math.PI) / 18;
-    const targetMouseY = (-state.pointer.y * Math.PI) / 22;
+    const targetMouseX = (state.pointer.x * Math.PI) / 20;
+    const targetMouseY = (-state.pointer.y * Math.PI) / 24;
 
     // Scroll vertical progression parallax
-    const scrollOffset = scrollRef.current * 4.5;
+    const scrollOffset = scrollRef.current * 4.0;
 
     groupRef.current.rotation.y = THREE.MathUtils.damp(
       groupRef.current.rotation.y,
@@ -670,7 +742,7 @@ const LuxuryParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children }
     );
     groupRef.current.rotation.x = THREE.MathUtils.damp(
       groupRef.current.rotation.x,
-      targetMouseY + (scrollRef.current * 0.05),
+      targetMouseY + (scrollRef.current * 0.04),
       2.0,
       delta
     );
@@ -687,7 +759,7 @@ const LuxuryParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children }
 };
 
 // ============================================================================
-// 7. MASTER GLOBAL 3D BACKGROUND EXPORT (Futuristic Innovation Headquarters)
+// 7. MASTER GLOBAL 3D BACKGROUND EXPORT (Futuristic Headquarters Environment)
 // ============================================================================
 export const GlobalSpaceBackground: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -704,23 +776,23 @@ export const GlobalSpaceBackground: React.FC = () => {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-[#0c0a09] select-none"
+      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-[#080A0C] select-none"
     >
-      {/* Layer 1: Atmospheric Architectural Backdrop Gradient (Warm Charcoal & Bronze Depth) */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0c0a09] via-[#141210] to-[#0a0807]" />
+      {/* Layer 1: Atmospheric Architectural Backdrop Gradient (Dark Graphite / Charcoal & Warm Amber Depth) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#080A0C] via-[#111417] to-[#080A0C]" />
 
-      {/* Atmospheric Warm Golden-Amber Horizon & Cove Glow */}
-      <div className="absolute top-1/4 right-1/12 w-[650px] h-[550px] bg-gradient-to-b from-amber-500/12 via-orange-600/8 to-transparent rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 left-1/12 w-[450px] h-[400px] bg-gradient-to-b from-amber-600/10 via-amber-800/5 to-transparent rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 right-0 h-[350px] bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+      {/* Atmospheric Warm Golden-Amber Cove & Horizon Glow (Matching Reference Image) */}
+      <div className="absolute top-1/4 right-1/12 w-[680px] h-[580px] bg-gradient-to-b from-[#FFB13B]/14 via-[#FF8C22]/8 to-transparent rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/12 w-[480px] h-[420px] bg-gradient-to-b from-[#FF8C22]/10 via-[#FFB13B]/5 to-transparent rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-[360px] bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none" />
 
-      {/* Subtle Architectural Horizontal Ambient Light Bands */}
-      <div className="absolute top-[18%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/20 to-transparent pointer-events-none" />
-      <div className="absolute top-[48%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/15 to-transparent pointer-events-none" />
+      {/* Architectural Horizontal Ambient Recessed Light Bands */}
+      <div className="absolute top-[18%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFB13B]/20 to-transparent pointer-events-none" />
+      <div className="absolute top-[48%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFB13B]/15 to-transparent pointer-events-none" />
 
       {/* Layer 2: 3D WebGL Three.js Scene */}
       <Canvas
-        camera={{ position: [0, 1.2, 18], fov: 50 }}
+        camera={{ position: [0, 1.2, 17.5], fov: 48 }}
         gl={{
           antialias: true,
           alpha: true,
@@ -732,31 +804,31 @@ export const GlobalSpaceBackground: React.FC = () => {
         performance={{ min: 0.8 }}
       >
         {/* Cinematic Atmospheric Scene Lighting */}
-        <ambientLight intensity={0.8} color="#2e2720" />
+        <ambientLight intensity={0.85} color="#1d1e22" />
         <directionalLight
-          position={[15, 20, 10]}
-          intensity={2.2}
-          color="#fef3c7"
+          position={[16, 22, 12]}
+          intensity={2.4}
+          color="#FFE9C2"
         />
         <directionalLight
-          position={[-15, 10, -5]}
-          intensity={1.0}
-          color="#38bdf8" // subtle cool cyan-white highlight for depth separation
+          position={[-16, 12, -4]}
+          intensity={0.95}
+          color="#DDE7EA" // subtle neutral-cool highlight for depth separation
         />
 
         {/* Parallax Rig wrapping all 3D scene elements */}
         <LuxuryParallaxRig>
-          {/* Architectural Interior (Columns, Reflective Floor, Ledges) */}
+          {/* Architectural Headquarters Interior (Columns, Floor, Planters) */}
           <ArchitecturalEnvironment isMobile={isMobile} />
 
           {/* Floating Smoked Metallic Glass Cubes with Glowing Amber Edges */}
           <AmbientFloatingCubes isMobile={isMobile} />
 
-          {/* Main 3D Floating Cloud Hologram with Internal Constellation & Orbital Rings */}
-          <FloatingCloudObject isMobile={isMobile} />
+          {/* Main 3D Floating Cloud Hologram Sculpture with Constellation & Orbital Rings */}
+          <FloatingCloudSculpture isMobile={isMobile} />
 
           {/* Floating Atmospheric Golden Amber Light Motes */}
-          <AtmosphericAmberParticles isMobile={isMobile} />
+          <AtmosphericAmberMotes isMobile={isMobile} />
         </LuxuryParallaxRig>
       </Canvas>
     </div>
