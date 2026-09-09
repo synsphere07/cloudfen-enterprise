@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
           // Scroll-spy active section detection only on home page
           if (pathname === '/') {
-            const sectionIds = ['home', 'about-us', 'services', 'careers', 'contact'];
+            const sectionIds = ['home', 'about-us', 'ai-agents', 'services', 'careers', 'contact'];
             const scrollPosition = window.scrollY + 140;
 
             for (let i = sectionIds.length - 1; i >= 0; i--) {

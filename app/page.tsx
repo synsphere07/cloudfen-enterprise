@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
 import HeroSection from '@/components/hero/HeroSection';
 import WeAreCloudFen from '@/components/sections/WeAreCloudFen';
+import AiAgentSolutionsSection from '@/components/sections/AiAgentSolutionsSection';
 import ServicesSection from '@/components/sections/ServicesSection';
 import Footer from '@/components/layout/Footer';
 import Modal from '@/components/ui/Modal';
@@ -77,7 +78,10 @@ export default function Home() {
           {/* 2. "WE ARE CLOUDFEN" Section (Why Choose Us, Our Mission, What We Do) */}
           <WeAreCloudFen onOpenDemo={() => openDemoWithSpend()} />
 
-          {/* 3. "SERVICES - What we do" Section (6 Services Grid) */}
+          {/* 3. "AI AGENT SOLUTIONS" Section (From Readiness to Production & Ops) */}
+          <AiAgentSolutionsSection onOpenDemo={() => openDemoWithSpend()} />
+
+          {/* 4. "SERVICES - What we do" Section (6 Services Grid) */}
           <ServicesSection onOpenDemo={() => openDemoWithSpend()} />
         </main>
 
