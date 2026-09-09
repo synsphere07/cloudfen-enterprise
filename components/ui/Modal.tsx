@@ -5,38 +5,46 @@ import confetti from 'canvas-confetti';
 import {
   X,
   Sparkles,
-  Terminal,
   ShieldCheck,
   Building2,
   CheckCircle2,
   ArrowRight,
   Loader2,
-  Zap
+  Lock,
+  Clock,
+  Workflow,
+  Cpu,
 } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
-import { LiquidMetalButton } from '@/components/ui/liquid-metal-button';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultWorkflow?: string;
   initialSpend?: number;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, initialSpend = 45000 }) => {
+export const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  defaultWorkflow = 'sourcing',
+  initialSpend,
+}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
-  const [cloud, setCloud] = useState('multi');
-  const [clusters, setClusters] = useState('10-50');
-  const [spend, setSpend] = useState<number>(initialSpend);
+  const [workflow, setWorkflow] = useState(defaultWorkflow);
+  const [volume, setVolume] = useState('1k-10k');
+  const [systems, setSystems] = useState('');
+  const [timeline, setTimeline] = useState('4-weeks');
+  const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    if (initialSpend) {
-      setSpend(initialSpend);
+    if (defaultWorkflow) {
+      setWorkflow(defaultWorkflow);
     }
-  }, [initialSpend]);
+  }, [defaultWorkflow]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -75,7 +83,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, initialSpend = 45
           colors: ['#00e5ff', '#38bdf8', '#4fd1c5', '#ffffff'],
         });
       } catch {
-        // Safe fallback if canvas-confetti is not available
+        // Safe fallback
       }
     }, 1200);
   };
@@ -96,14 +104,14 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, initialSpend = 45
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-xl bg-black border border-cyan-500/40 rounded-3xl shadow-2xl overflow-hidden z-10 my-8">
+      <div className="relative w-full max-w-2xl bg-[#0b0f19] border border-cyan-500/40 rounded-3xl shadow-[0_0_60px_rgba(6,182,212,0.25)] overflow-hidden z-10 my-8">
         {/* Top Glowing Beam */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-500" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-500" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl bg-black/90 border border-white/10 text-slate-400 hover:text-white hover:border-cyan-500/40 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-2 rounded-xl bg-zinc-900/90 border border-zinc-700 text-slate-400 hover:text-white hover:border-cyan-400/50 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-4 h-4" />
@@ -114,62 +122,66 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, initialSpend = 45
           {isSubmitted ? (
             /* Success Confirmation State */
             <div className="text-center py-6 space-y-6">
-              <div className="w-16 h-16 rounded-3xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center mx-auto text-cyan-300 shadow-neon-cyan">
+              <div className="w-16 h-16 rounded-3xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center mx-auto text-cyan-300 shadow-[0_0_25px_rgba(6,182,212,0.4)]">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-2xl font-extrabold text-white">
-                  Enterprise Sandbox Provisioned!
+                <h3 className="text-2xl font-bold text-white">
+                  Readiness Call Request Confirmed
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                  Welcome aboard, <span className="text-cyan-300 font-bold">{name || 'Architect'}</span>. We have generated your dedicated multi-cloud sandbox environment for <span className="text-white font-semibold">{company || 'your organization'}</span>.
+                  Thank you, <span className="text-cyan-300 font-bold">{name || 'Leader'}</span>. Our AI Systems Engineering team has received your workflow brief for <span className="text-white font-semibold">{company || 'your organization'}</span>.
                 </p>
               </div>
 
-              {/* Mock Sandbox Credentials */}
-              <div className="p-4 rounded-2xl bg-black/90 border border-white/10 text-left font-mono text-xs space-y-2 text-slate-300">
-                <div className="flex justify-between items-center text-slate-500 text-[10px] pb-1 border-b border-white/10">
-                  <span>TEMPORARY DEMO CREDENTIALS (48 HR ACCESS)</span>
-                  <span className="text-emerald-400 font-bold">READY</span>
+              {/* Assessment Briefing Card */}
+              <div className="p-5 rounded-2xl bg-black/70 border border-zinc-800 text-left font-mono text-xs space-y-2.5 text-slate-300">
+                <div className="flex justify-between items-center text-slate-500 text-[10px] pb-1.5 border-b border-zinc-800">
+                  <span>DISCOVERY SESSION PREPARATION</span>
+                  <span className="text-emerald-400 font-bold">DISPATCHED</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Instance URL:</span>
-                  <span className="text-cyan-300">https://sandbox.cloudfen.io/org/{company.toLowerCase().replace(/\s+/g, '-') || 'demo'}</span>
+                  <span className="text-slate-500">Target Workflow:</span>
+                  <span className="text-cyan-300 capitalize">{workflow.replace(/-/g, ' ')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Target Scale:</span>
-                  <span className="text-teal-300">{clusters} Clusters · {formatCurrency(spend)}/mo stack</span>
+                  <span className="text-slate-500">Volume Tier:</span>
+                  <span className="text-teal-300">{volume} transactions/month</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Assigned SRE:</span>
-                  <span className="text-slate-200">Enterprise Solutions Architect</span>
+                  <span className="text-slate-500">Target Timeline:</span>
+                  <span className="text-slate-200">4-Week Agent Readiness Sprint</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Pre-Call Deliverable:</span>
+                  <span className="text-slate-200">Mutual NDA & Workflow Feasibility Assessment</span>
                 </div>
               </div>
 
               <div className="pt-2 flex justify-center">
-                <LiquidMetalButton
-                  label="Return to Platform Tour"
+                <button
                   onClick={handleResetAndClose}
-                  icon={ArrowRight}
-                  viewMode="both"
-                />
+                  className="px-8 py-3.5 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-cyan-400 to-teal-300 hover:from-cyan-300 hover:to-teal-200 shadow-md transition-all cursor-pointer"
+                >
+                  Return to Website
+                </button>
               </div>
             </div>
           ) : (
-            /* Booking / Assessment Form */
+            /* Booking / Assessment Intake Form */
             <>
               {/* Header */}
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-xs font-mono text-cyan-300">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-xs font-mono text-cyan-300">
                   <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Interactive Enterprise Sandbox</span>
+                  <span>4-Week Agent Readiness Sprint</span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-white">
-                  Schedule CloudFen Architecture Audit & Live Demo
+                <h3 className="text-xl sm:text-2xl font-bold text-white">
+                  Book an Agent Readiness Call
                 </h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Experience autonomous GitOps, FinOps compute arbitrage, and eBPF kernel security tailored to your cloud topology.
+                  Discuss your target workflow with our enterprise AI engineers. We’ll analyze feasibility, design guardrails, and outline measurable production ROI.
                 </p>
               </div>
 
@@ -179,30 +191,30 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, initialSpend = 45
                   {/* Full Name */}
                   <div className="space-y-1.5">
                     <label className="text-xs font-mono text-slate-300 font-semibold block">
-                      Your Name
+                      Full Name *
                     </label>
                     <input
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Alex Mercer"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-xs font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400"
+                      placeholder="Jane Doe"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
                     />
                   </div>
 
                   {/* Work Email */}
                   <div className="space-y-1.5">
                     <label className="text-xs font-mono text-slate-300 font-semibold block">
-                      Work Email
+                      Work Email *
                     </label>
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="alex@enterprise.com"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-xs font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400"
+                      placeholder="jane@enterprise.com"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
                     />
                   </div>
                 </div>
@@ -211,82 +223,111 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, initialSpend = 45
                   {/* Company Name */}
                   <div className="space-y-1.5">
                     <label className="text-xs font-mono text-slate-300 font-semibold block">
-                      Company Name
+                      Company Name *
                     </label>
                     <input
                       type="text"
                       required
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      placeholder="OmniStream Tech"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-xs font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400"
+                      placeholder="Acme Global Inc."
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
                     />
                   </div>
 
-                  {/* Primary Cloud */}
+                  {/* Target Workflow */}
                   <div className="space-y-1.5">
                     <label className="text-xs font-mono text-slate-300 font-semibold block">
-                      Primary Cloud Stack
+                      Target Workflow *
                     </label>
                     <select
-                      value={cloud}
-                      onChange={(e) => setCloud(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-cyan-400"
+                      value={workflow}
+                      onChange={(e) => setWorkflow(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
                     >
-                      <option value="multi">Multi-Cloud (AWS + GCP + Azure)</option>
-                      <option value="aws">Amazon Web Services (AWS)</option>
-                      <option value="gcp">Google Cloud Platform (GCP)</option>
-                      <option value="azure">Microsoft Azure</option>
-                      <option value="hybrid">Hybrid Bare-Metal / K3s</option>
+                      <option value="sourcing">Candidate Sourcing & Screening</option>
+                      <option value="onboarding">Employee / Contractor Onboarding</option>
+                      <option value="back-office">Invoice AP & PO Reconciliation</option>
+                      <option value="procurement">Vendor Compliance & Contracts</option>
+                      <option value="support">Tier-1 Support & Service Desk</option>
+                      <option value="custom">Custom Multi-Step Workflow</option>
                     </select>
                   </div>
                 </div>
 
-                {/* Scale & Current Spend */}
+                {/* Monthly Volume & Systems */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-mono text-slate-300 font-semibold block">
-                      Kubernetes Clusters
+                      Monthly Transaction Volume
                     </label>
                     <select
-                      value={clusters}
-                      onChange={(e) => setClusters(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-cyan-400"
+                      value={volume}
+                      onChange={(e) => setVolume(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
                     >
-                      <option value="1-5">1 - 5 Clusters</option>
-                      <option value="6-25">6 - 25 Clusters</option>
-                      <option value="25-100">25 - 100 Clusters</option>
-                      <option value="100+">100+ Multi-Region Scale</option>
+                      <option value="<1k">&lt; 1,000 / month</option>
+                      <option value="1k-10k">1,000 - 10,000 / month</option>
+                      <option value="10k-50k">10,000 - 50,000 / month</option>
+                      <option value="50k+">50,000+ / month (Enterprise)</option>
                     </select>
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-mono text-slate-300 font-semibold block">
-                      Est. Monthly Cloud Spend
+                      Key Enterprise Systems
                     </label>
-                    <div className="px-3.5 py-2.5 rounded-xl bg-black border border-white/10 text-xs font-mono text-cyan-300 font-bold">
-                      {formatCurrency(spend)}/mo
-                    </div>
+                    <input
+                      type="text"
+                      value={systems}
+                      onChange={(e) => setSystems(e.target.value)}
+                      placeholder="e.g. Workday, SAP, Greenhouse, Jira"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
+                    />
                   </div>
                 </div>
 
+                {/* Project Context */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono text-slate-300 font-semibold block">
+                    Current Bottleneck / What is slowing this workflow down?
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="e.g. Manual document review takes 4 hours per candidate; need automated scoring and HRIS writeback."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono resize-none"
+                  />
+                </div>
+
                 {/* Trust Guarantee Note */}
-                <div className="p-3 rounded-xl bg-black/80 border border-white/10 flex items-start gap-2.5 text-[11px] text-slate-400">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="p-3 rounded-xl bg-black/60 border border-zinc-800/80 flex items-start gap-2.5 text-[11px] text-slate-400 font-mono">
+                  <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
                   <span>
-                    Non-invasive IAM role integration. No customer code or database records leave your cloud boundaries.
+                    Mutual NDA signed prior to call. Zero customer data is retained or used for external model training.
                   </span>
                 </div>
 
                 {/* Submit CTA */}
-                <div className="pt-2 flex justify-center">
-                  <LiquidMetalButton
-                    label={isSubmitting ? 'Provisioning Sandbox...' : 'Launch Dedicated Demo & Audit'}
+                <div className="pt-2">
+                  <button
                     type="submit"
                     disabled={isSubmitting}
-                    icon={ArrowRight}
-                    viewMode="both"
-                  />
+                    className="w-full py-4 px-6 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-300 hover:from-cyan-300 hover:to-teal-300 shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Scheduling Technical Fit Call...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Book an Agent Readiness Call</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
                 </div>
               </form>
             </>

@@ -16,40 +16,41 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'CloudFen · Autonomous Multi-Cloud Control Plane & FinOps Fabric',
+  title: 'CloudFen — Production AI Agents for Enterprise Workflows',
   description:
-    'CloudFen unifies AWS, Azure, GCP, and Kubernetes into a single autonomous control plane with automated GitOps, FinOps compute arbitrage, and zero-trust eBPF security.',
+    'CloudFen designs, deploys, and operates reliable AI agents for enterprise workflows. From sourcing and onboarding to back-office operations — move from AI experiments to measurable production automation in 4 weeks.',
   keywords: [
+    'Enterprise AI Agents',
+    'AI Workflow Automation',
+    'Agent Readiness Sprint',
+    'AI Agent Operations',
+    'Production AI',
+    'Agentic Automation',
+    'Enterprise AI Platform',
+    'HR AI Agent',
+    'Finance AI Automation',
     'CloudFen',
-    'Multi-Cloud',
-    'FinOps',
-    'GitOps',
-    'Kubernetes',
-    'DevOps',
-    'Terraform',
-    'eBPF',
-    'Autonomous Cloud',
   ],
-  authors: [{ name: 'CloudFen Architecture Team' }],
-  applicationName: 'CloudFen App',
+  authors: [{ name: 'CloudFen Enterprise AI' }],
+  applicationName: 'CloudFen',
   appleWebApp: {
     capable: true,
     title: 'CloudFen',
     statusBarStyle: 'black-translucent',
   },
   openGraph: {
-    title: 'CloudFen · Autonomous Multi-Cloud & FinOps Control Plane',
+    title: 'CloudFen — Production AI Agents for Enterprise Workflows',
     description:
-      'Unify heterogeneous clouds into one resilient fabric. Deploy 4.2x faster with automated GitOps and 43% FinOps savings.',
-    url: 'https://cloudfen.io',
-    siteName: 'CloudFen Enterprise',
+      'Turn repetitive business workflows into reliable AI-powered operations. Move from AI experimentation to measurable production automation in 4 weeks.',
+    url: 'https://cloudfen.com',
+    siteName: 'CloudFen Enterprise AI',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CloudFen · Autonomous Multi-Cloud Control Plane',
+    title: 'CloudFen — Production AI Agents for Enterprise Workflows',
     description:
-      'Deploy 4.2x faster with automated GitOps and 43% FinOps compute arbitrage.',
+      'CloudFen designs, deploys, and operates reliable AI agents that handle real enterprise workflows with measurable before-and-after results.',
   },
   icons: {
     icon: '/cloudfen-emblem.svg',

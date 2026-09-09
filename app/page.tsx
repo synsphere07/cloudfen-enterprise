@@ -7,6 +7,7 @@ import HeroSection from '@/components/hero/HeroSection';
 import WeAreCloudFen from '@/components/sections/WeAreCloudFen';
 import AiAgentSolutionsSection from '@/components/sections/AiAgentSolutionsSection';
 import ServicesSection from '@/components/sections/ServicesSection';
+import FinalCtaSection from '@/components/sections/FinalCtaSection';
 import Footer from '@/components/layout/Footer';
 import Modal from '@/components/ui/Modal';
 
@@ -83,6 +84,9 @@ export default function Home() {
 
           {/* 4. "SERVICES - What we do" Section (6 Services Grid) */}
           <ServicesSection onOpenDemo={() => openDemoWithSpend()} />
+
+          {/* 5. Final CTA Section (Book an Agent Readiness Call) */}
+          <FinalCtaSection onOpenDemo={() => openDemoWithSpend()} />
         </main>
 
         {/* Corporate Footer */}

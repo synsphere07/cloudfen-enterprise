@@ -27,6 +27,11 @@ import {
 
 const SERVICE_OPTIONS = [
   '-- Select One --',
+  '4-Week Agent Readiness Sprint ($25k)',
+  'Agentic Sourcing Desk',
+  'Onboarding & Compliance Agent',
+  'Back-Office & AP Operations Agent',
+  '24/7 Managed Agent Operations',
   'IT Staffing & Consulting',
   'Product Development',
   'Maintenance and Support',
@@ -112,10 +117,6 @@ export default function ContactPage() {
     }
     if (!formData.subject.trim()) {
       setErrorMessage('Please provide a subject for your inquiry.');
-      return;
-    }
-    if (!selectedFile) {
-      setErrorMessage('Please upload your CV / Resume document.');
       return;
     }
     if (!formData.message.trim()) {
@@ -451,11 +452,11 @@ export default function ContactPage() {
                       </select>
                     </div>
 
-                    {/* Row 4: UPLOAD CV (File Input as per exact screenshot requirement) */}
+                    {/* Row 4: UPLOAD RFP / SPEC / CV (File Input) */}
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
-                          Upload CV <span className="text-cyan-400">*</span>
+                          Upload RFP / Architecture Spec / CV <span className="text-slate-500 font-normal">(Optional)</span>
                         </label>
                         <span className="text-[11px] text-slate-500 font-mono">
                           PDF, DOC, DOCX, TXT (Max 10MB)
