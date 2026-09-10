@@ -32,32 +32,32 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
   const pillarCards = [
     {
       title: 'WHY CHOOSE US.',
-      subtitle: 'Because we are Reliable.',
+      subtitle: 'Because We Deliver Deterministic Reliability.',
       description:
-        'CloudFen understands clearly with the customer business requirements. We have highly skilled engineers with excellent technical knowledge and experience in using latest software standards, tools, platforms, frameworks and technologies.',
+        'CloudFen partners with enterprise leaders to solve complex operational bottlenecks. Our systems architects and AI engineers bring deep domain mastery across production AI agents, deterministic workflows, modern cloud architectures, and hardened enterprise software standards.',
       img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=85',
       alt: 'Why Choose Us - Reliable Engineering Collaboration',
-      tag: 'RELIABILITY',
+      tag: 'RELIABILITY & QUALITY',
       icon: ShieldCheck,
     },
     {
       title: 'OUR MISSION.',
-      subtitle: 'To Redefine your Brand.',
+      subtitle: 'To Redefine Enterprise Operations.',
       description:
-        "CloudFen aims to establish an interactive platforms to work towards achieving customer's goals, with healthy infrastructure and advanced software product developement we strive to offer updated application servers.",
+        'CloudFen builds high-reliability software platforms and autonomous AI agent fleets. We eliminate manual friction, enforce strict schema validation, and scale organizational throughput while maintaining 100% data sovereignty.',
       img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=85',
       alt: 'Our Mission - Interactive Platform Architecture',
-      tag: 'BRAND VISION',
+      tag: 'ENTERPRISE VISION',
       icon: Target,
     },
     {
       title: 'WHAT WE DO.',
-      subtitle: 'Make our Customers Happy.',
+      subtitle: 'Engineering Value at Scale.',
       description:
-        'At Cloudfen we make real things happen for our customers through high quality services. We intend to give the best services on product development, It Staffing solutions, Outsourcing, Upgraded infrastructure services to enrich our customers experiences with Cloudfen.',
+        'From the 4-Week Agent Readiness Sprint to specialized IT staffing, custom product development, and 24/7 managed agent operations—we turn strategic AI roadmaps into hardened, audited production systems.',
       img: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=1200&q=85',
       alt: 'What We Do - Customer Success & High Quality Services',
-      tag: 'HIGH QUALITY',
+      tag: 'ENGINEERING & OPS',
       icon: HeartHandshake,
     },
   ];
@@ -470,10 +470,10 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
             {/* Exact Screenshot Paragraphs */}
             <div className="space-y-4 text-slate-300 text-sm sm:text-base leading-relaxed">
               <p className="font-normal text-slate-200">
-                Cloudfen emphasizes in understanding customer requirements. We help people pursue opportunities beyond boundaries is through highly skilled engineers.
+                CloudFen emphasizes deep understanding of complex enterprise requirements. We empower organizations to pursue aggressive digital transformation by deploying top-tier software engineers and AI systems architects.
               </p>
               <p className="text-slate-400">
-                Sound technical knowledge and expertise in advanced software tools, frameworks and technologies are our strength for reliable engagement.
+                Sound technical mastery in modern AI frameworks, deterministic guardrails, cloud mesh, and distributed systems forms the foundation of our long-term client engagements.
               </p>
             </div>
 

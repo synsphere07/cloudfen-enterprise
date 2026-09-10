@@ -17,6 +17,17 @@ import {
 
 const footerLinkGroups = [
   {
+    group: 'AI Solutions',
+    items: [
+      { title: '4-Week Readiness Sprint', href: '/readiness-sprint' },
+      { title: 'Agentic Sourcing Desk', href: '/solutions/sourcing' },
+      { title: 'Onboarding & Compliance', href: '/solutions/onboarding' },
+      { title: 'Back-Office Operations', href: '/solutions/back-office' },
+      { title: 'Managed Agent Operations', href: '/agent-operations' },
+      { title: 'Architecture Blueprint', href: '/how-it-works' },
+    ],
+  },
+  {
     group: 'Services',
     items: [
       { title: 'IT Staffing & Consulting', href: '/services/it-staffing' },
@@ -38,24 +49,14 @@ const footerLinkGroups = [
     ],
   },
   {
-    group: 'Company',
+    group: 'Company & Trust',
     items: [
       { title: 'About CloudFen', href: '/#about-us' },
-      { title: 'Vertical Expertise', href: '/industries' },
-      { title: 'Autonomous Cloud', href: '/our-focus#cloud' },
-      { title: 'eBPF Telemetry', href: '/our-focus#devops' },
-      { title: 'Careers & Hiring', href: '/services/recruitment' },
-      { title: 'Contact & Support', href: '/contact' },
-    ],
-  },
-  {
-    group: 'Legal',
-    items: [
-      { title: 'Terms of Service', href: '/contact' },
-      { title: 'Privacy Policy', href: '/contact' },
-      { title: 'SOC 2 & HIPAA', href: '/contact' },
+      { title: 'Case Studies & ROI', href: '/case-studies' },
+      { title: 'Our Focus Areas', href: '/our-focus' },
+      { title: 'SOC 2 & HIPAA Moat', href: '/contact' },
       { title: 'Security Architecture', href: '/our-focus#networking' },
-      { title: 'Cookies & Compliance', href: '/contact' },
+      { title: 'Contact Systems Team', href: '/contact' },
     ],
   },
 ];

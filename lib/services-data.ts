@@ -57,12 +57,12 @@ export const SERVICES_DATA: ServiceDetail[] = [
     subtitle: 'Strategic IT Talent Augmentation & Technology Consulting',
     breadcrumb: 'Home / Services / IT STAFFING',
     shortDescription:
-      'CloudFen ensures in finding the right talent for the assigned task. Quality is our priority for helping employers find the required staff with thorough screening.',
+      'CloudFen ensures organizations secure elite engineering talent. We specialize in precision candidate sourcing, rigorous multi-tier technical vetting, and rapid deployment for mission-critical projects.',
     description:
-      'CloudFen ensures in finding the right talent for the assigned task. Quality is our priority for helping the employers finds the required staff for completing a project. A detailed background check, testing and screening is conducted for every candidate we place for your organization.',
+      'CloudFen ensures organizations secure elite engineering talent for specialized technical initiatives. We prioritize quality and speed, helping enterprise employers source, evaluate, and place top-tier engineering talent with comprehensive background checks, live coding assessments, and security clearances.',
     paragraphs: [
-      'CloudFen ensures in finding the right talent for the assigned task. Quality is our priority for helping the employers finds the required staff for completing a project.',
-      'A detailed background check, testing and screening is conducted for every candidate we place for your organization to ensure unmatched delivery standards and project success.',
+      'CloudFen delivers precision IT staffing and talent augmentation for enterprise organizations. We connect hiring managers with pre-vetted, top-tier engineering specialists across cloud, AI, full-stack, and cybersecurity disciplines.',
+      'A rigorous multi-tier technical evaluation, background check, and skill screening process is conducted for every candidate to guarantee unmatched delivery standards and seamless team integration.',
     ],
     heroImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=85',
     img1: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=85',
@@ -126,12 +126,12 @@ export const SERVICES_DATA: ServiceDetail[] = [
     subtitle: 'End-to-End Application Engineering, Conceptualization & Digital Products',
     breadcrumb: 'Home / Services / Product Development',
     shortDescription:
-      'We follow a series of steps that includes conceptualization, design, and development to cultivate, maintain and increase market share.',
+      'We guide digital products through conceptualization, architectural design, agile engineering, and continuous deployment to scale market share and customer engagement.',
     description:
-      "We during the development process follow the series of steps that includes the conceptualization, design, development of the product.The objective of product development is to cultivate, maintain and increase a company's market share by satisfying a consumer demand.",
+      'We guide modern digital products through a rigorous engineering lifecycle encompassing market conceptualization, interactive UI/UX architecture, scalable full-stack development, and automated CI/CD deployment. Our objective is to accelerate time-to-market and cultivate enterprise market share through robust, scalable software.',
     paragraphs: [
-      "We during the development process follow the series of steps that includes the conceptualization, design, development of the product.",
-      "The objective of product development is to cultivate, maintain and increase a company's market share by satisfying a consumer demand through robust engineering and interactive platforms.",
+      'Our product engineering methodology follows a disciplined, agile lifecycle encompassing conceptualization, architectural blueprinting, and full-stack software development.',
+      'The objective of our product development practice is to cultivate, maintain, and expand enterprise market share by satisfying user demand through high-reliability engineering, modern web portals, and scalable microservices.',
     ],
     heroImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=85',
     img1: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=85',
@@ -195,12 +195,12 @@ export const SERVICES_DATA: ServiceDetail[] = [
     subtitle: 'Healthy Infrastructure, Software Project Management & Continuous System Monitoring',
     breadcrumb: 'Home / Services / Maintenance and Support',
     shortDescription:
-      'CloudFen make sure to help our customers to manage their software projects better. We understand the importance of the healthy infractrure to run the smooth business.',
+      'CloudFen empowers organizations with proactive infrastructure management, continuous real-time monitoring, and SLA-backed support to guarantee operational continuity.',
     description:
-      'CloudFen make sure to help our customers to manage their software projects better. We understand the importance of the healthy infractrure to run the smooth business. We are sucessful and have ability to produce a solid performance to continually meet and exceed overall expectations with constant monitoring and shaping of job, department, and organizational goals and objectives to ensure our success.',
+      'CloudFen empowers organizations to manage complex software projects with healthy infrastructure and continuous monitoring. We maintain a proven track record of exceeding operational SLAs through 24/7 telemetry monitoring, proactive vulnerability patching, and aligning system uptime with business objectives.',
     paragraphs: [
-      'CloudFen make sure to help our customers to manage their software projects better. We understand the importance of the healthy infractrure to run the smooth business.',
-      'We are sucessful and have ability to produce a solid performance to continually meet and exceed overall expectations with constant monitoring and shaping of job, department, and organizational goals and objectives to ensure our success.',
+      'CloudFen provides enterprise-grade maintenance and support to ensure healthy infrastructure and smooth operational continuity across all software environments.',
+      'Our dedicated reliability engineering teams deliver consistent high performance, exceeding SLA expectations through 24/7 real-time telemetry monitoring, automated alerting, and proactive system optimization.',
     ],
     heroImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=85',
     img1: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85',
@@ -264,12 +264,12 @@ export const SERVICES_DATA: ServiceDetail[] = [
     subtitle: 'Customer Requirements, Boundary-Pushing Engineering & Advanced Technologies',
     breadcrumb: 'Home / Services / INFRASTRUCTURE',
     shortDescription:
-      'Cloudfen emphasizes in understanding customer requirements. We help people pursue opportunties beyond boundaries is through highly skilled engineers.',
+      'CloudFen designs and modernizes resilient cloud and network infrastructure. We help organizations scale beyond boundaries through veteran systems engineers and cutting-edge cloud architectures.',
     description:
-      'Cloudfen emphasizes in understanding customer requirements. We help people pursue opportunties beyond boundaries is through highly skilled engineers. Sound techninal knowledge and expertise in advanced software tools,frame works and technologies are our strength for reliable engagement.',
+      'CloudFen emphasizes deep understanding of enterprise infrastructure requirements. We help organizations modernize legacy networks and scale cloud architectures through veteran systems engineers, advanced software tools, Infrastructure as Code (IaC), and reliable 24/7 operations.',
     paragraphs: [
-      'Cloudfen emphasizes in understanding customer requirements. We help people pursue opportunties beyond boundaries is through highly skilled engineers.',
-      'Sound techninal knowledge and expertise in advanced software tools,frame works and technologies are our strength for reliable engagement',
+      'CloudFen specializes in analyzing complex infrastructure requirements to engineer resilient cloud fabrics, high-speed networks, and secure server environments.',
+      'Our deep technical mastery in modern DevOps tooling, container orchestration, multi-cloud fabrics, and zero-trust security forms the foundation of our reliable client partnerships.',
     ],
     heroImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=85',
     img1: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=85',
@@ -333,12 +333,12 @@ export const SERVICES_DATA: ServiceDetail[] = [
     subtitle: 'Experienced Recruiting Staff, Unique Filtering Process & Best Talent Reach',
     breadcrumb: 'Home / Services / RECRUITMENT',
     shortDescription:
-      'Finding a right talented resources is not always easy. Our experienced recruiting staff will make sure to find qualified candidates for you.',
+      'Securing specialized tech talent requires precision. Our experienced recruiting teams and algorithmic vetting pipelines identify qualified engineering specialists tailored to your organizational needs.',
     description:
-      'Finding a right talented resources is not always easy.Our experienced recruiting staff will make sure to find qualified candidates for you. We follow unique process in filtering the candidate to find the best talents not only good in technical but also in understand the needs to reach.',
+      'Securing specialized tech talent is essential for modern enterprise growth. Our seasoned recruiting team combines deep industry reach with a unique multi-tier filtering process to source candidates who excel not only in technical mastery but also in strategic alignment with your business objectives.',
     paragraphs: [
-      'Finding a right talented resources is not always easy.Our experienced recruiting staff will make sure to find qualified candidates for you.',
-      'We follow unique process in filtering the candidate to find the best talents not only good in technical but also in understand the needs to reach.',
+      'Finding and recruiting specialized engineering talent requires precision outreach and domain expertise. Our experienced recruiting team ensures organizations hire thoroughly verified, high-impact technical candidates.',
+      'We utilize a unique candidate filtering framework that assesses architectural acumen, practical coding proficiency, and alignment with organizational goals to ensure long-term retention.',
     ],
     heroImage: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1600&q=85',
     img1: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1200&q=85',
@@ -402,12 +402,12 @@ export const SERVICES_DATA: ServiceDetail[] = [
     subtitle: 'Flexible & Agile Business Transformation, Cost Savings & World-Class Staff',
     breadcrumb: 'Home / Services / Outsourcing',
     shortDescription:
-      'Outsourcing can also help to make your business more flexible and agile, able to adapt to changing market conditions and challenges, while providing cost savings and service level improvements.',
+      'Agile outsourcing solutions that enhance organizational flexibility, drive cost efficiencies, and provide world-class engineering teams adapted to changing market conditions.',
     description:
-      'Outsourcing can also help to make your business more flexible and agile, able to adapt to changing market conditions and challenges, while providing cost savings and service level improvements. At CloudFen Well positioned, with a world-class staff, to rapidly respond to the evolving IT landscape and offer the right solution at the right time.',
+      'Outsourcing with CloudFen enhances organizational agility and accelerates digital transformation while providing significant cost efficiencies and SLA improvements. CloudFen is strategically positioned with world-class engineering pods to respond rapidly to the evolving technology landscape and deliver high-impact solutions on time.',
     paragraphs: [
-      'Outsourcing can also help to make your business more flexible and agile, able to adapt to changing market conditions and challenges, while providing cost savings and service level improvements.',
-      'At CloudFen Well positioned, with a world-class staff, to rapidly respond to the evolving IT landscape and offer the right solution at the right time.',
+      'Outsourcing with CloudFen makes your business more agile and resilient, enabling rapid adaptation to changing market conditions while delivering substantial cost efficiencies and service level improvements.',
+      'CloudFen is strategically equipped with world-class engineering talent and dedicated delivery centers to respond to evolving enterprise demands and deliver scalable software solutions on schedule.',
     ],
     heroImage: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1600&q=85',
     img1: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=85',
