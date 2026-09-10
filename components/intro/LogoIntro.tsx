@@ -1,10 +1,22 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Sparkles, ArrowDown, ChevronRight, Zap } from 'lucide-react';
 
 interface LogoIntroProps {
   onStartExit?: () => void;
   onComplete?: () => void;
+}
+
+interface WarpStar {
+  x: number;
+  y: number;
+  z: number;
+  prevZ: number;
+  r: number;
+  a: number;
+  speed: number;
+  phase: number;
 }
 
 export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
@@ -17,14 +29,17 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
 
   const [animationDone, setAnimationDone] = useState(false);
   const [scrolledAway, setScrolledAway] = useState(false);
+  const [warpActive, setWarpActive] = useState(false);
 
   const emblemStateRef = useRef({ visible: false, revealProgress: 0 });
+  const isWarpingRef = useRef(false);
+  const warpVelocityRef = useRef(1);
 
   const setCharRef = useCallback((index: number) => (el: HTMLDivElement | null) => {
     charRefs.current[index] = el;
   }, []);
 
-  // Starfield background
+  // 1. STARFIELD BACKGROUND WITH HYPERSPACE WARP ACCELERATION
   useEffect(() => {
     const canvas = bgCanvasRef.current;
     if (!canvas) return;
@@ -32,50 +47,127 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
     if (!ctx) return;
 
     let animId: number;
-    interface Star {
-      x: number; y: number; r: number; a: number; speed: number; phase: number;
-    }
-    let stars: Star[] = [];
+    let stars: WarpStar[] = [];
+    const starCount = 380;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
-    function resize() {
-      canvas!.width = window.innerWidth;
-      canvas!.height = window.innerHeight;
+    function initStars() {
+      width = canvas!.width = window.innerWidth;
+      height = canvas!.height = window.innerHeight;
       stars = [];
-      for (let i = 0; i < 200; i++) {
+
+      for (let i = 0; i < starCount; i++) {
         stars.push({
-          x: Math.random() * canvas!.width,
-          y: Math.random() * canvas!.height,
-          r: 0.3 + Math.random() * 1.4,
-          a: 0.15 + Math.random() * 0.5,
+          x: (Math.random() - 0.5) * width * 2,
+          y: (Math.random() - 0.5) * height * 2,
+          z: Math.random() * 1000 + 1,
+          prevZ: 1000,
+          r: 0.4 + Math.random() * 1.5,
+          a: 0.2 + Math.random() * 0.7,
           speed: 0.002 + Math.random() * 0.006,
           phase: Math.random() * Math.PI * 2,
         });
       }
     }
 
-    resize();
-    window.addEventListener('resize', resize);
+    initStars();
+    window.addEventListener('resize', initStars);
 
     function draw(t: number) {
-      ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
-      stars.forEach(s => {
-        const flicker = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
-        ctx!.beginPath();
-        ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(255, 255, 255, ${s.a * flicker * 0.75})`;
-        ctx!.fill();
-      });
+      if (!ctx || !canvas) return;
+
+      const isWarping = isWarpingRef.current;
+      const cx = width / 2;
+      const cy = height / 2;
+
+      if (isWarping) {
+        // Accelerate warp velocity exponentially
+        warpVelocityRef.current = Math.min(warpVelocityRef.current * 1.09 + 0.8, 65);
+
+        // Motion trail background during hyperspace jump
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+        ctx.fillRect(0, 0, width, height);
+
+        for (let i = 0; i < stars.length; i++) {
+          const s = stars[i];
+          s.prevZ = s.z;
+          s.z -= warpVelocityRef.current;
+
+          if (s.z <= 0) {
+            s.z = 1000;
+            s.prevZ = 1000;
+            s.x = (Math.random() - 0.5) * width * 2;
+            s.y = (Math.random() - 0.5) * height * 2;
+          }
+
+          // Project 3D coordinates to 2D screen
+          const k = 400 / s.z;
+          const px = s.x * k + cx;
+          const py = s.y * k + cy;
+
+          const prevK = 400 / s.prevZ;
+          const prevPx = s.x * prevK + cx;
+          const prevPy = s.y * prevK + cy;
+
+          if (px >= 0 && px <= width && py >= 0 && py <= height) {
+            const streakDist = Math.hypot(px - prevPx, py - prevPy);
+            const alpha = Math.min(1, (1 - s.z / 1000) * 1.4);
+
+            ctx.beginPath();
+            ctx.moveTo(prevPx, prevPy);
+            ctx.lineTo(px, py);
+
+            if (streakDist > 8) {
+              // Glowing warp streak with cyan tint
+              const gradient = ctx.createLinearGradient(prevPx, prevPy, px, py);
+              gradient.addColorStop(0, `rgba(0, 229, 255, ${alpha * 0.2})`);
+              gradient.addColorStop(0.7, `rgba(180, 245, 255, ${alpha * 0.8})`);
+              gradient.addColorStop(1, `rgba(255, 255, 255, ${alpha})`);
+
+              ctx.strokeStyle = gradient;
+              ctx.lineWidth = Math.max(1, s.r * (1 + streakDist * 0.05));
+            } else {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+              ctx.lineWidth = s.r;
+            }
+
+            ctx.stroke();
+          }
+        }
+      } else {
+        // Idle gentle twinkling celestial starfield
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < stars.length; i++) {
+          const s = stars[i];
+          const flicker = 0.5 + 0.5 * Math.sin(t * s.speed + s.phase);
+
+          // Subtle natural drift
+          const px = s.x * (400 / s.z) + cx;
+          const py = s.y * (400 / s.z) + cy;
+
+          if (px >= 0 && px <= width && py >= 0 && py <= height) {
+            ctx.beginPath();
+            ctx.arc(px, py, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${s.a * flicker * 0.85})`;
+            ctx.fill();
+          }
+        }
+      }
+
       animId = requestAnimationFrame(draw);
     }
+
     animId = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', initStars);
     };
   }, []);
 
-  // Emblem canvas animation
+  // 2. EMBLEM CANVAS ANIMATION
   useEffect(() => {
     const canvas = emblemCanvasRef.current;
     if (!canvas) return;
@@ -175,7 +267,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  // Letter reveal timeline
+  // 3. LETTER REVEAL TIMELINE
   useEffect(() => {
     const delay = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
@@ -192,7 +284,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           el.style.opacity = '1';
           el.style.filter = 'blur(0)';
           el.classList.add('revealed');
-          setTimeout(resolve, 220);
+          setTimeout(resolve, 200);
         });
       });
     }
@@ -220,27 +312,27 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           slot.style.transform = 'scale(1) rotateZ(0deg)';
           slot.style.opacity = '1';
           slot.style.filter = 'blur(0)';
-          setTimeout(resolve, 500);
+          setTimeout(resolve, 450);
         });
       });
     }
 
     const timeline: { type: string; charIndex?: number; delay: number }[] = [
-      { type: 'char', charIndex: 0, delay: 400 },
-      { type: 'char', charIndex: 1, delay: 280 },
-      { type: 'emblem', delay: 450 },
-      { type: 'char', charIndex: 2, delay: 320 },
-      { type: 'char', charIndex: 3, delay: 280 },
-      { type: 'pause', delay: 350 },
-      { type: 'char', charIndex: 4, delay: 320 },
-      { type: 'char', charIndex: 5, delay: 260 },
-      { type: 'char', charIndex: 6, delay: 260 },
+      { type: 'char', charIndex: 0, delay: 350 },
+      { type: 'char', charIndex: 1, delay: 240 },
+      { type: 'emblem', delay: 380 },
+      { type: 'char', charIndex: 2, delay: 280 },
+      { type: 'char', charIndex: 3, delay: 240 },
+      { type: 'pause', delay: 280 },
+      { type: 'char', charIndex: 4, delay: 280 },
+      { type: 'char', charIndex: 5, delay: 220 },
+      { type: 'char', charIndex: 6, delay: 220 },
     ];
 
     let cancelled = false;
 
     async function runTimeline() {
-      await delay(500);
+      await delay(400);
       for (const item of timeline) {
         if (cancelled) return;
         if (item.type === 'pause') {
@@ -255,7 +347,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
         }
       }
       if (!cancelled) {
-        await delay(600);
+        await delay(500);
         setAnimationDone(true);
       }
     }
@@ -264,18 +356,20 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
     return () => { cancelled = true; };
   }, []);
 
-  // Mouse 3D tilt
+  // 4. MOUSE 3D TILT
   useEffect(() => {
     const logo = logo3dRef.current;
     if (!logo) return;
 
     const onMove = (e: MouseEvent) => {
+      if (isWarpingRef.current) return;
       const xRatio = (e.clientX / window.innerWidth - 0.5);
       const yRatio = (e.clientY / window.innerHeight - 0.5);
       logo.style.animation = 'none';
       logo.style.transform = `rotateY(${xRatio * 22}deg) rotateX(${-yRatio * 15}deg)`;
     };
     const onLeave = () => {
+      if (isWarpingRef.current) return;
       logo.style.animation = 'floatScene 7s ease-in-out infinite';
     };
 
@@ -287,40 +381,54 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
     };
   }, []);
 
-  const handleScrollDown = useCallback(() => {
-    if (scrolledAway) return;
+  // 5. SEAMLESS WARP TRANSITION TRIGGER TO WEBSITE OPENING
+  const triggerTransition = useCallback(() => {
+    if (scrolledAway || isWarpingRef.current) return;
+
     setScrolledAway(true);
+    setWarpActive(true);
+    isWarpingRef.current = true;
+
+    // Notify parent to start revealing website underneath
     onStartExit?.();
+
+    // After warp acceleration and aperture flash completes (1100ms), unmount intro
     setTimeout(() => {
       onComplete?.();
-    }, 850);
+    }, 1150);
   }, [scrolledAway, onStartExit, onComplete]);
 
-  // Detect scroll/wheel/touch/keyboard/click to trigger transition
+  // Global listeners for scroll, wheel, keyboard, and gestures
   useEffect(() => {
     if (scrolledAway) return;
 
     let triggered = false;
     const onWheel = (e: WheelEvent) => {
-      if (e.deltaY > 0 && !triggered) {
+      if ((e.deltaY > 0 || Math.abs(e.deltaX) > 30) && !triggered) {
         triggered = true;
-        handleScrollDown();
+        triggerTransition();
       }
     };
 
     let touchStartY = 0;
-    const onTouchStart = (e: TouchEvent) => { touchStartY = e.touches[0].clientY; };
+    let touchStartX = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    };
     const onTouchMove = (e: TouchEvent) => {
-      if (touchStartY - e.touches[0].clientY > 40 && !triggered) {
+      const deltaY = touchStartY - e.touches[0].clientY;
+      const deltaX = Math.abs(touchStartX - e.touches[0].clientX);
+      if ((deltaY > 30 || deltaX > 40) && !triggered) {
         triggered = true;
-        handleScrollDown();
+        triggerTransition();
       }
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (['Space', 'Enter', 'ArrowDown', 'PageDown'].includes(e.code) && !triggered) {
+      if (['Space', 'Enter', 'ArrowDown', 'PageDown', 'Escape'].includes(e.code) && !triggered) {
         triggered = true;
-        handleScrollDown();
+        triggerTransition();
       }
     };
 
@@ -335,7 +443,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [scrolledAway, handleScrollDown]);
+  }, [scrolledAway, triggerTransition]);
 
   const charData = [
     { letter: 'C', cap: true },
@@ -351,10 +459,33 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
   return (
     <section
       ref={containerRef}
-      className={`logo-intro-section ${scrolledAway ? 'logo-intro-exit' : ''}`}
+      onClick={triggerTransition}
+      className={`logo-intro-section ${scrolledAway ? 'logo-intro-warp-exit' : ''}`}
+      aria-label="CloudFen Logo Intro"
     >
+      {/* Dynamic Hyperspace Canvas */}
       <canvas ref={bgCanvasRef} className="logo-intro-bg-canvas" />
 
+      {/* Warp Light Flash & Shockwave Aperture Overlays */}
+      <div className={`warp-flash-burst ${warpActive ? 'warp-flash-burst-active' : ''}`} />
+      <div className={`warp-shockwave-ring ${warpActive ? 'warp-shockwave-active' : ''}`} />
+      <div className={`warp-anamorphic-flare ${warpActive ? 'warp-flare-active' : ''}`} />
+
+      {/* Top Skip Button */}
+      <div className="absolute top-6 right-6 z-30 pointer-events-auto">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            triggerTransition();
+          }}
+          className="px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider text-slate-400 hover:text-cyan-300 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/40 backdrop-blur-md transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+        >
+          <span>SKIP INTRO</span>
+          <span className="text-[10px] text-slate-500">[ESC]</span>
+        </button>
+      </div>
+
+      {/* 3D Perspective Wordmark Stage */}
       <div className="logo-intro-stage">
         <div className="logo-intro-3d" ref={logo3dRef}>
           <div className="logo-intro-word-row">
@@ -398,24 +529,39 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
               </div>
             ))}
           </div>
+
+          {/* Subtitle Badge */}
+          <div className={`logo-intro-subline ${animationDone ? 'logo-intro-subline-visible' : ''}`}>
+            <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-[0.35em] text-cyan-400/90 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+              ENTERPRISE AI AGENTS & WORKFLOW MESH
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Interactive Enter Callout & Scroll Indicator */}
       <div
         className={`logo-intro-scroll-indicator ${animationDone ? 'logo-intro-scroll-visible' : ''}`}
-        onClick={handleScrollDown}
       >
-        <span className="logo-intro-scroll-text">Scroll to explore</span>
-        <div className="logo-intro-scroll-arrow">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-        </div>
-        <div className="logo-intro-scroll-mouse">
-          <div className="logo-intro-scroll-mouse-body">
-            <div className="logo-intro-scroll-mouse-wheel" />
-          </div>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            triggerTransition();
+          }}
+          className="group relative px-6 py-2.5 rounded-full bg-gradient-to-r from-cyan-500/20 via-teal-500/20 to-cyan-500/20 hover:from-cyan-400 hover:to-teal-300 border border-cyan-400/50 hover:border-cyan-300 text-cyan-300 hover:text-black font-mono text-xs font-semibold tracking-widest uppercase transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(6,182,212,0.8)] cursor-pointer flex items-center gap-2 transform hover:scale-105 active:scale-95"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-cyan-400 group-hover:text-black transition-colors" />
+          <span>ENTER PLATFORM</span>
+          <ChevronRight className="w-3.5 h-3.5 text-cyan-400 group-hover:text-black group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-slate-500 uppercase mt-1">
+          <span>Scroll</span>
+          <span>·</span>
+          <span>Swipe</span>
+          <span>·</span>
+          <span>Press Space</span>
         </div>
       </div>
 
@@ -433,31 +579,107 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           overflow: hidden;
           background: #000000;
           z-index: 100;
-          transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s ease;
+          cursor: pointer;
+          user-select: none;
+          transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                      filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .logo-intro-exit {
+
+        /* Hyperspace Warp Camera Zoom & Dissolve */
+        .logo-intro-warp-exit {
           opacity: 0;
-          transform: scale(1.06) translateY(-20px);
-          filter: blur(8px);
+          filter: blur(12px) brightness(1.6);
           pointer-events: none;
         }
+
+        .logo-intro-warp-exit .logo-intro-stage {
+          transform: scale3d(2.4, 2.4, 2.4) translateZ(450px);
+          opacity: 0;
+          filter: blur(16px);
+          transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+                      opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                      filter 0.95s ease;
+        }
+
         .logo-intro-bg-canvas {
           position: absolute;
           top: 0; left: 0;
           width: 100%; height: 100%;
           z-index: 0;
         }
+
+        /* Dynamic Light Burst Overlay */
+        .warp-flash-burst {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.5) 0%, rgba(0, 229, 255, 0.15) 30%, transparent 70%);
+          opacity: 0;
+          pointer-events: none;
+          z-index: 2;
+          transform: scale(0.5);
+          transition: opacity 0.5s ease-out, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .warp-flash-burst-active {
+          opacity: 1;
+          transform: scale(3.5);
+        }
+
+        /* Expanding Shockwave Ring */
+        .warp-shockwave-ring {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 300px;
+          height: 300px;
+          margin-top: -150px;
+          margin-left: -150px;
+          border-radius: 50%;
+          border: 2px solid rgba(0, 229, 255, 0.8);
+          box-shadow: 0 0 50px rgba(0, 229, 255, 0.6), inset 0 0 30px rgba(0, 229, 255, 0.4);
+          opacity: 0;
+          pointer-events: none;
+          z-index: 2;
+          transform: scale(0.1);
+        }
+        .warp-shockwave-active {
+          opacity: 1;
+          transform: scale(6);
+          transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Anamorphic Horizontal Flare */
+        .warp-anamorphic-flare {
+          position: absolute;
+          top: 50%;
+          left: 0;
+          right: 0;
+          height: 2px;
+          margin-top: -1px;
+          background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.9) 30%, #ffffff 50%, rgba(0, 229, 255, 0.9) 70%, transparent 100%);
+          box-shadow: 0 0 25px rgba(0, 229, 255, 0.9);
+          opacity: 0;
+          pointer-events: none;
+          z-index: 3;
+          transform: scaleX(0.2);
+          transition: opacity 0.4s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .warp-flare-active {
+          opacity: 1;
+          transform: scaleX(1.5);
+        }
+
         .logo-intro-stage {
           position: relative;
           z-index: 1;
           perspective: 1200px;
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .logo-intro-3d {
           transform-style: preserve-3d;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 24px;
+          gap: 20px;
           animation: floatScene 7s ease-in-out infinite;
         }
         @keyframes floatScene {
@@ -504,7 +726,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           top: 50%; left: 50%;
           width: 70px; height: 70px;
           transform: translate(-50%, -50%) translateZ(-5px);
-          background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(0,229,255,0.12) 0%, transparent 70%);
           border-radius: 50%;
           z-index: 0;
           opacity: 0;
@@ -523,61 +745,32 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           margin: 0 -5px;
         }
 
-        /* Scroll indicator */
+        .logo-intro-subline {
+          opacity: 0;
+          transform: translateY(10px);
+          transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .logo-intro-subline-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Scroll / Enter callout */
         .logo-intro-scroll-indicator {
           position: absolute;
-          bottom: 40px;
+          bottom: 36px;
           left: 50%;
           transform: translateX(-50%);
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 12px;
-          cursor: pointer;
+          gap: 10px;
           opacity: 0;
-          transition: opacity 1s ease;
+          transition: opacity 0.8s ease;
           z-index: 10;
         }
         .logo-intro-scroll-visible {
           opacity: 1;
-        }
-        .logo-intro-scroll-text {
-          font-family: var(--font-inter), 'Inter', sans-serif;
-          font-size: 12px;
-          letter-spacing: 4px;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.4);
-        }
-        .logo-intro-scroll-arrow {
-          color: rgba(0, 210, 230, 0.6);
-          animation: scrollBounce 2s ease-in-out infinite;
-        }
-        @keyframes scrollBounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(8px); }
-        }
-        .logo-intro-scroll-mouse {
-          margin-top: 4px;
-        }
-        .logo-intro-scroll-mouse-body {
-          width: 22px;
-          height: 36px;
-          border: 1.5px solid rgba(255,255,255,0.25);
-          border-radius: 11px;
-          display: flex;
-          justify-content: center;
-          padding-top: 8px;
-        }
-        .logo-intro-scroll-mouse-wheel {
-          width: 3px;
-          height: 8px;
-          border-radius: 2px;
-          background: rgba(0, 210, 230, 0.7);
-          animation: mouseScroll 2s ease-in-out infinite;
-        }
-        @keyframes mouseScroll {
-          0%, 100% { transform: translateY(0); opacity: 1; }
-          50% { transform: translateY(6px); opacity: 0.3; }
         }
 
         @media (max-width: 768px) {

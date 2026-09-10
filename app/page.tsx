@@ -22,7 +22,7 @@ export default function Home() {
   const [modalSpend, setModalSpend] = useState<number>(45000);
 
   useEffect(() => {
-    // Lock scroll during intro
+    // Lock scroll during intro splash screen
     if (introState === 'intro') {
       document.body.style.overflow = 'hidden';
     } else {
@@ -54,7 +54,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Full-Screen 3D Logo Intro Splash Screen */}
+      {/* 1. Full-Screen 3D Logo Intro with Starfield Warp Acceleration */}
       {introState !== 'completed' && (
         <LogoIntro
           onStartExit={() => setIntroState('transitioning')}
@@ -62,11 +62,25 @@ export default function Home() {
         />
       )}
 
-      {/* Main Website - Reveals seamlessly after logo intro */}
+      {/* 2. Transition Aperture Light Flare Bridge */}
+      {introState === 'transitioning' && (
+        <div
+          className="fixed inset-0 z-40 pointer-events-none transition-opacity duration-1000 ease-out animate-fade-out"
+          style={{
+            background: 'radial-gradient(circle at 50% 30%, rgba(6, 182, 212, 0.18) 0%, rgba(13, 148, 136, 0.08) 40%, transparent 75%)',
+          }}
+        />
+      )}
+
+      {/* 3. Main Website Canvas - Reveals with cinematic depth & de-blur */}
       <div
         id="main-content"
-        className={`relative min-h-screen text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden transition-opacity duration-1000 ease-out ${
-          introState === 'intro' ? 'opacity-0 pointer-events-none h-screen overflow-hidden' : 'opacity-100'
+        className={`relative min-h-screen text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden ${
+          introState === 'intro'
+            ? 'opacity-0 scale-[0.95] blur-sm pointer-events-none h-screen overflow-hidden'
+            : introState === 'transitioning'
+            ? 'opacity-100 scale-100 blur-0 transition-all duration-1100 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none'
+            : 'opacity-100 scale-100 blur-0 transition-none pointer-events-auto'
         }`}
       >
         {/* Global Navbar */}
