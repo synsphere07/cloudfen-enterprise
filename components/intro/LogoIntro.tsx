@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Sparkles, ArrowDown, ChevronRight, Zap } from 'lucide-react';
+import { Sparkles, ArrowDown, ChevronRight, ArrowRight, Zap } from 'lucide-react';
 
 interface LogoIntroProps {
   onStartExit?: () => void;
@@ -549,19 +549,24 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
             e.stopPropagation();
             triggerTransition();
           }}
-          className="group relative inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-black/60 hover:bg-black/85 border border-cyan-400/40 hover:border-cyan-300/90 backdrop-blur-xl shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_45px_rgba(6,182,212,0.7)] transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer"
+          className="group relative inline-flex items-center gap-3.5 px-8 py-3.5 rounded-full bg-black/70 hover:bg-black/90 border border-cyan-400/40 hover:border-cyan-300 backdrop-blur-2xl shadow-[0_0_25px_rgba(6,182,212,0.25)] hover:shadow-[0_0_40px_rgba(6,182,212,0.65)] transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer overflow-hidden"
         >
-          {/* Ambient inner gradient */}
-          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/15 via-teal-500/20 to-cyan-500/15 opacity-75 group-hover:opacity-100 transition-opacity" />
+          {/* Ambient inner glow layer */}
+          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/15 via-teal-500/20 to-cyan-500/15 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
 
-          <Sparkles className="w-4 h-4 text-cyan-400 group-hover:rotate-12 transition-transform duration-300 relative z-10" />
+          {/* Left glowing spark indicator */}
+          <div className="relative z-10 w-6 h-6 rounded-full bg-cyan-400/15 border border-cyan-400/30 flex items-center justify-center group-hover:scale-110 group-hover:bg-cyan-400/25 transition-all duration-300">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-300 group-hover:text-cyan-100 transition-colors" />
+          </div>
 
-          <span className="relative z-10 font-sans text-sm sm:text-base font-semibold tracking-wider text-slate-100 group-hover:text-white transition-colors">
-            Enter the Platform
+          {/* Text: Enter the platform */}
+          <span className="relative z-10 font-sans text-sm sm:text-base font-medium tracking-wide text-slate-100 group-hover:text-white transition-colors duration-200">
+            Enter the platform
           </span>
 
-          <div className="relative z-10 w-6 h-6 rounded-full bg-cyan-500/20 group-hover:bg-cyan-400 flex items-center justify-center transition-all duration-300">
-            <ChevronRight className="w-3.5 h-3.5 text-cyan-300 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+          {/* Right sleek arrow */}
+          <div className="relative z-10 w-6 h-6 rounded-full bg-cyan-500/20 group-hover:bg-cyan-400 flex items-center justify-center transition-all duration-300 group-hover:translate-x-0.5">
+            <ArrowRight className="w-3.5 h-3.5 text-cyan-300 group-hover:text-black transition-colors" />
           </div>
         </button>
       </div>
