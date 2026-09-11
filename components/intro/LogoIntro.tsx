@@ -540,7 +540,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
         </div>
       </div>
 
-      {/* Interactive Enter Callout & Scroll Indicator */}
+      {/* Interactive Enter Callout */}
       <div
         className={`logo-intro-scroll-indicator ${animationDone ? 'logo-intro-scroll-visible' : ''}`}
       >
@@ -549,20 +549,21 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
             e.stopPropagation();
             triggerTransition();
           }}
-          className="group relative px-6 py-2.5 rounded-full bg-gradient-to-r from-cyan-500/20 via-teal-500/20 to-cyan-500/20 hover:from-cyan-400 hover:to-teal-300 border border-cyan-400/50 hover:border-cyan-300 text-cyan-300 hover:text-black font-mono text-xs font-semibold tracking-widest uppercase transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(6,182,212,0.8)] cursor-pointer flex items-center gap-2 transform hover:scale-105 active:scale-95"
+          className="group relative inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-black/60 hover:bg-black/85 border border-cyan-400/40 hover:border-cyan-300/90 backdrop-blur-xl shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_45px_rgba(6,182,212,0.7)] transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <Sparkles className="w-3.5 h-3.5 text-cyan-400 group-hover:text-black transition-colors" />
-          <span>ENTER PLATFORM</span>
-          <ChevronRight className="w-3.5 h-3.5 text-cyan-400 group-hover:text-black group-hover:translate-x-0.5 transition-transform" />
-        </button>
+          {/* Ambient inner gradient */}
+          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/15 via-teal-500/20 to-cyan-500/15 opacity-75 group-hover:opacity-100 transition-opacity" />
 
-        <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-slate-500 uppercase mt-1">
-          <span>Scroll</span>
-          <span>·</span>
-          <span>Swipe</span>
-          <span>·</span>
-          <span>Press Space</span>
-        </div>
+          <Sparkles className="w-4 h-4 text-cyan-400 group-hover:rotate-12 transition-transform duration-300 relative z-10" />
+
+          <span className="relative z-10 font-sans text-sm sm:text-base font-semibold tracking-wider text-slate-100 group-hover:text-white transition-colors">
+            Enter the Platform
+          </span>
+
+          <div className="relative z-10 w-6 h-6 rounded-full bg-cyan-500/20 group-hover:bg-cyan-400 flex items-center justify-center transition-all duration-300">
+            <ChevronRight className="w-3.5 h-3.5 text-cyan-300 group-hover:text-black group-hover:translate-x-0.5 transition-all" />
+          </div>
+        </button>
       </div>
 
       <style jsx>{`
