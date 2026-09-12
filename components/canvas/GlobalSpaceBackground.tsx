@@ -5,538 +5,609 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // ============================================================================
-// 1. DEEP COSMIC NEBULA GLSL SHADER PLANE (Volumetric Galactic Gas Clouds)
+// COLOR PALETTE & LUXURY ARCHITECTURAL STYLING MATCHING REFERENCE SPECIFICATION
 // ============================================================================
-const CosmicNebulaPlane: React.FC = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
+// Base: #080A0C, #111417, #171A1D, #22262A (Dark Graphite / Modern Corporate Glass)
+// Accent: #FFB13B, #FF8C22, #FFC15A, #FFE2A0 (Warm Amber / Golden Luminescence)
+// Secondary: #DDE7EA, #88B4C4 (Subtle Daylight Highlights)
+// Foliage: #1b2e23, #15241b (Architectural Indoor Planters)
 
-  const shaderArgs = useMemo(() => {
-    return {
-      uniforms: {
-        uTime: { value: 0 },
-        uScroll: { value: 0 },
-        uMouse: { value: new THREE.Vector2(0, 0) },
-      },
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform float uTime;
-        uniform float uScroll;
-        uniform vec2 uMouse;
-        varying vec2 vUv;
+// ============================================================================
+// 1. FLOATING 3D SMOKED GLASS CUBE WITH GLOWING AMBER EDGES (Hero Left)
+// ============================================================================
+interface GlowingCubeProps {
+  position: [number, number, number];
+  size: number;
+  rotSpeed?: [number, number, number];
+  floatSpeed?: number;
+  floatAmplitude?: number;
+  floatOffset?: number;
+  edgeColor?: string;
+  glowIntensity?: number;
+  hasPointLight?: boolean;
+}
 
-        // 2D Simplex / Perlin noise helpers
-        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-        vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-        vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+const GlowingCube: React.FC<GlowingCubeProps> = ({
+  position,
+  size,
+  rotSpeed = [0.003, 0.006, 0.002],
+  floatSpeed = 0.85,
+  floatAmplitude = 0.22,
+  floatOffset = 0,
+  edgeColor = '#FFB13B',
+  glowIntensity = 3.0,
+  hasPointLight = false,
+}) => {
+  const meshRef = useRef<THREE.Group>(null);
+  const initialY = position[1];
 
-        float snoise(vec2 v) {
-          const vec4 C = vec4(0.211324865405187, 0.366025403784439,
-                             -0.577350269189626, 0.024390243902439);
-          vec2 i  = floor(v + dot(v, C.yy) );
-          vec2 x0 = v -   i + dot(i, C.xx);
-          vec2 i1;
-          i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-          vec4 x12 = x0.xyxy + C.xxzz;
-          x12.xy -= i1;
-          i = mod289(i);
-          vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-                + i.x + vec3(0.0, i1.x, 1.0 ));
-          vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-          m = m*m ;
-          m = m*m ;
-          vec3 x = 2.0 * fract(p * C.www) - 1.0;
-          vec3 h = abs(x) - 0.5;
-          vec3 ox = floor(x + 0.5);
-          vec3 a0 = x - ox;
-          m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-          vec3 g;
-          g.x  = a0.x  * x0.x  + h.x  * x0.y;
-          g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-          return 130.0 * dot(m, g);
-        }
-
-        // Fractional Brownian Motion for multi-layered cosmic gas
-        float fbm(vec2 st) {
-          float value = 0.0;
-          float amplitude = 0.5;
-          float frequency = 1.0;
-          for (int i = 0; i < 4; i++) {
-            value += amplitude * abs(snoise(st * frequency));
-            st += vec2(1.2, 2.3);
-            frequency *= 2.05;
-            amplitude *= 0.48;
-          }
-          return value;
-        }
-
-        void main() {
-          vec2 uv = vUv * 2.2 - vec2(1.1);
-          uv.x += uMouse.x * 0.08;
-          uv.y -= uScroll * 0.25;
-
-          float t = uTime * 0.035;
-
-          // Flowing nebula distortion vectors
-          vec2 q = vec2(fbm(uv + vec2(0.0, t * 0.5)), fbm(uv + vec2(5.2, 1.3 - t * 0.4)));
-          vec2 r = vec2(fbm(uv + 3.0 * q + vec2(1.7, 9.2 + t * 0.3)), fbm(uv + 3.0 * q + vec2(8.3, 2.8 - t * 0.2)));
-          float f = fbm(uv + 2.5 * r);
-
-          // Deep cosmic color grading: Deep Obsidian, Stellar Cyan/Teal, Cosmic Indigo & Soft Violet
-          vec3 colDarkNavy = vec3(0.005, 0.015, 0.035);
-          vec3 colDeepIndigo = vec3(0.04, 0.03, 0.12);
-          vec3 colStellarCyan = vec3(0.0, 0.45, 0.65);
-          vec3 colGalacticTeal = vec3(0.01, 0.25, 0.35);
-          vec3 colCosmicPurple = vec3(0.18, 0.04, 0.28);
-
-          vec3 color = mix(colDarkNavy, colDeepIndigo, clamp(f * 1.6, 0.0, 1.0));
-          color = mix(color, colGalacticTeal, clamp(length(q) * 0.6, 0.0, 1.0));
-          color = mix(color, colStellarCyan, clamp(pow(r.x, 2.0) * 0.7, 0.0, 1.0));
-          color = mix(color, colCosmicPurple, clamp(pow(r.y, 2.5) * 0.55, 0.0, 1.0));
-
-          // Soft cosmic dust intensity
-          float alpha = smoothstep(0.15, 0.85, f) * 0.38;
-
-          // Vignette around screen edges
-          float d = length(vUv - vec2(0.5));
-          alpha *= smoothstep(0.95, 0.2, d);
-
-          gl_FragColor = vec4(color, alpha);
-        }
-      `,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    };
-  }, []);
+  const { boxGeo, edgesGeo } = useMemo(() => {
+    const bGeo = new THREE.BoxGeometry(size, size, size);
+    const eGeo = new THREE.EdgesGeometry(bGeo);
+    return { boxGeo: bGeo, edgesGeo: eGeo };
+  }, [size]);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      const mat = meshRef.current.material as THREE.ShaderMaterial;
-      if (mat?.uniforms) {
-        mat.uniforms.uTime.value = state.clock.getElapsedTime();
-      }
-    }
-  });
-
-  return (
-    <mesh ref={meshRef} position={[0, 0, -50]}>
-      <planeGeometry args={[180, 120]} />
-      <shaderMaterial attach="material" args={[shaderArgs]} />
-    </mesh>
-  );
-};
-
-// ============================================================================
-// 2. MULTI-COLORED DISTANT STARFIELD (Tiny Pinprick Twinkling Stars)
-// ============================================================================
-const DistantStarfield: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
-  const pointsRef = useRef<THREE.Points>(null);
-  const count = isMobile ? 1800 : 3800;
-
-  const { positions, colors, sizes, twinkleData } = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
-    const sz = new Float32Array(count);
-    const tw = new Float32Array(count * 2);
-
-    // Color palettes for stars: Pure White, Stellar Cyan, Ice Blue, Soft Gold/Amber
-    const starColorTypes = [
-      new THREE.Color(1.0, 1.0, 1.0),      // Pure white (60%)
-      new THREE.Color(1.0, 1.0, 1.0),
-      new THREE.Color(1.0, 1.0, 1.0),
-      new THREE.Color(0.4, 0.85, 1.0),     // Stellar Cyan (20%)
-      new THREE.Color(0.7, 0.9, 1.0),      // Ice Blue (10%)
-      new THREE.Color(1.0, 0.85, 0.6),     // Warm Amber (10%)
-    ];
-
-    for (let i = 0; i < count; i++) {
-      const radius = 35 + Math.random() * 110;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 2 - 1);
-
-      pos[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 160;
-      pos[i * 3 + 2] = -30 - Math.random() * 90;
-
-      // Color selection
-      const c = starColorTypes[Math.floor(Math.random() * starColorTypes.length)];
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
-
-      // Varied star size
-      sz[i] = 0.9 + Math.random() * 1.1;
-
-      // Twinkle properties
-      tw[i * 2] = 0.8 + Math.random() * 2.5; // speed
-      tw[i * 2 + 1] = Math.random() * Math.PI * 2; // phase
-    }
-
-    return { positions: pos, colors: col, sizes: sz, twinkleData: tw };
-  }, [count]);
-
-  const shaderArgs = useMemo(() => {
-    return {
-      uniforms: {
-        uTime: { value: 0 },
-        uPixelRatio: { value: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1 },
-      },
-      vertexShader: `
-        uniform float uTime;
-        uniform float uPixelRatio;
-        attribute vec3 aColor;
-        attribute float aSize;
-        attribute vec2 aTwinkle;
-        varying vec3 vColor;
-        varying float vAlpha;
-
-        void main() {
-          vColor = aColor;
-          float speed = aTwinkle.x;
-          float phase = aTwinkle.y;
-          float twinkle = sin(uTime * speed + phase) * 0.4 + 0.6;
-          vAlpha = twinkle * 0.9;
-
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_Position = projectionMatrix * mvPosition;
-          gl_PointSize = (aSize * (270.0 / -mvPosition.z)) * uPixelRatio * (0.8 + 0.3 * twinkle);
-        }
-      `,
-      fragmentShader: `
-        varying vec3 vColor;
-        varying float vAlpha;
-
-        void main() {
-          vec2 coord = gl_PointCoord - vec2(0.5);
-          float dist = length(coord);
-          if (dist > 0.5) discard;
-
-          // Smooth spherical star disc with luminous core and soft glow falloff
-          float core = smoothstep(0.5, 0.05, dist);
-          float glow = exp(-dist * 4.5) * 0.5;
-          float intensity = core + glow;
-
-          gl_FragColor = vec4(vColor, intensity * vAlpha);
-        }
-      `,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    };
-  }, []);
-
-  useFrame((state) => {
+    if (!meshRef.current) return;
     const t = state.clock.getElapsedTime();
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y = t * 0.003;
-      pointsRef.current.rotation.x = Math.sin(t * 0.002) * 0.005;
-      const mat = pointsRef.current.material as THREE.ShaderMaterial;
-      if (mat?.uniforms?.uTime) {
-        mat.uniforms.uTime.value = t;
-      }
-    }
+
+    // Smooth multi-axis slow rotation
+    meshRef.current.rotation.x += rotSpeed[0];
+    meshRef.current.rotation.y += rotSpeed[1];
+    meshRef.current.rotation.z += rotSpeed[2];
+
+    // Subtle floating levitation
+    meshRef.current.position.y = initialY + Math.sin(t * floatSpeed + floatOffset) * floatAmplitude;
   });
 
   return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-aColor" args={[colors, 3]} />
-        <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
-        <bufferAttribute attach="attributes-aTwinkle" args={[twinkleData, 2]} />
-      </bufferGeometry>
-      <shaderMaterial attach="material" args={[shaderArgs]} />
-    </points>
-  );
-};
+    <group ref={meshRef} position={position}>
+      {/* Dark Smoked Metallic Glass Body */}
+      <mesh geometry={boxGeo}>
+        <meshPhysicalMaterial
+          color="#111417"
+          roughness={0.12}
+          metalness={0.88}
+          transmission={0.45}
+          thickness={1.0}
+          transparent={true}
+          opacity={0.92}
+          reflectivity={0.9}
+          clearcoat={0.9}
+          clearcoatRoughness={0.08}
+        />
+      </mesh>
 
-// ============================================================================
-// 3. CONSTELLATION NODES & GLOWING MAJOR STARS (Diffraction Spikes & Lines)
-// ============================================================================
-const ConstellationMesh: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
-  const pointsRef = useRef<THREE.Points>(null);
-  const linesRef = useRef<THREE.LineSegments>(null);
-  const count = isMobile ? 35 : 75;
+      {/* Primary Intense Glowing Amber Edge Lines */}
+      <lineSegments geometry={edgesGeo}>
+        <lineBasicMaterial
+          color={edgeColor}
+          transparent={true}
+          opacity={0.95}
+          blending={THREE.AdditiveBlending}
+        />
+      </lineSegments>
 
-  const { starPositions, starSizes, linePositions } = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const sz = new Float32Array(count);
-    const starList: THREE.Vector3[] = [];
+      {/* Secondary Outer Halo Edge Glow */}
+      <lineSegments geometry={edgesGeo} scale={[1.015, 1.015, 1.015]}>
+        <lineBasicMaterial
+          color="#FFC15A"
+          transparent={true}
+          opacity={0.5 * glowIntensity}
+          blending={THREE.AdditiveBlending}
+        />
+      </lineSegments>
 
-    for (let i = 0; i < count; i++) {
-      const v = new THREE.Vector3(
-        (Math.random() - 0.5) * 110,
-        (Math.random() - 0.5) * 85,
-        -15 - Math.random() * 45
-      );
-      starList.push(v);
-      pos[i * 3] = v.x;
-      pos[i * 3 + 1] = v.y;
-      pos[i * 3 + 2] = v.z;
-
-      sz[i] = 2.2 + Math.random() * 1.6;
-    }
-
-    // Connect close stars with constellation lines
-    const lineCoords: number[] = [];
-    const maxDist = isMobile ? 18 : 24;
-
-    for (let i = 0; i < count; i++) {
-      for (let j = i + 1; j < count; j++) {
-        const d = starList[i].distanceTo(starList[j]);
-        if (d < maxDist) {
-          lineCoords.push(starList[i].x, starList[i].y, starList[i].z);
-          lineCoords.push(starList[j].x, starList[j].y, starList[j].z);
-        }
-      }
-    }
-
-    return {
-      starPositions: pos,
-      starSizes: sz,
-      linePositions: new Float32Array(lineCoords),
-    };
-  }, [count, isMobile]);
-
-  const starShader = useMemo(() => {
-    return {
-      uniforms: {
-        uTime: { value: 0 },
-        uPixelRatio: { value: typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 1 },
-      },
-      vertexShader: `
-        uniform float uTime;
-        uniform float uPixelRatio;
-        attribute float aSize;
-        varying float vPulse;
-
-        void main() {
-          float pulse = sin(uTime * 1.5 + position.x * 0.1) * 0.25 + 0.75;
-          vPulse = pulse;
-
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_Position = projectionMatrix * mvPosition;
-          gl_PointSize = (aSize * (320.0 / -mvPosition.z)) * uPixelRatio * pulse;
-        }
-      `,
-      fragmentShader: `
-        varying float vPulse;
-
-        void main() {
-          vec2 coord = gl_PointCoord - vec2(0.5);
-          float dist = length(coord);
-          if (dist > 0.5) discard;
-
-          // Cross diffraction spike glow
-          float crossGlow = 0.0;
-          if (abs(coord.x) < 0.06 || abs(coord.y) < 0.06) {
-            crossGlow = exp(-dist * 3.5) * 0.6;
-          }
-
-          float core = smoothstep(0.5, 0.02, dist);
-          float halo = exp(-dist * 4.0) * 0.7;
-          float intensity = core + halo + crossGlow;
-
-          // Luminous cyan-white star core
-          vec3 col = mix(vec3(0.4, 0.9, 1.0), vec3(1.0, 1.0, 1.0), core);
-          gl_FragColor = vec4(col, intensity * vPulse * 0.95);
-        }
-      `,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    };
-  }, []);
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y = t * 0.005;
-      const mat = pointsRef.current.material as THREE.ShaderMaterial;
-      if (mat?.uniforms?.uTime) mat.uniforms.uTime.value = t;
-    }
-    if (linesRef.current) {
-      linesRef.current.rotation.y = t * 0.005;
-    }
-  });
-
-  return (
-    <group>
-      {/* Prominent Constellation Stars */}
-      <points ref={pointsRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[starPositions, 3]} />
-          <bufferAttribute attach="attributes-aSize" args={[starSizes, 1]} />
-        </bufferGeometry>
-        <shaderMaterial attach="material" args={[starShader]} />
-      </points>
-
-      {/* Subtle Constellation Lines */}
-      {linePositions.length > 0 && (
-        <lineSegments ref={linesRef}>
-          <bufferGeometry>
-            <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
-          </bufferGeometry>
-          <lineBasicMaterial
-            color="#00e5ff"
-            transparent
-            opacity={0.12}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </lineSegments>
+      {/* Optional Soft Warm Point Light from Cube Core */}
+      {hasPointLight && (
+        <pointLight
+          color="#FFB13B"
+          intensity={3.2}
+          distance={10}
+          decay={2}
+        />
       )}
     </group>
   );
 };
 
 // ============================================================================
-// 4. ANIMATED SHOOTING STARS / METEORS (Dynamic Streaking Comets)
+// 2. SCATTERED AMBIENT FLOATING CUBES (Depth Field Placement)
 // ============================================================================
-interface Meteor {
-  head: THREE.Vector3;
-  dir: THREE.Vector3;
-  length: number;
-  speed: number;
-  life: number;
-  maxLife: number;
-  active: boolean;
-  color: THREE.Color;
-}
+const AmbientFloatingCubes: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
+  const cubesData = useMemo(() => {
+    const list: Array<{
+      pos: [number, number, number];
+      size: number;
+      rotSpeed: [number, number, number];
+      floatSpeed: number;
+      floatAmp: number;
+      offset: number;
+      hasLight?: boolean;
+    }> = [];
 
-const MeteorsSystem: React.FC = () => {
-  const lineMeshRef = useRef<THREE.LineSegments>(null);
-  const meteorCount = 5;
-
-  const meteors = useRef<Meteor[]>([]);
-
-  useEffect(() => {
-    meteors.current = Array.from({ length: meteorCount }, () => ({
-      head: new THREE.Vector3(),
-      dir: new THREE.Vector3(-1.2, -0.6, -0.4).normalize(),
-      length: 12 + Math.random() * 16,
-      speed: 40 + Math.random() * 30,
-      life: 0,
-      maxLife: 1.2 + Math.random() * 1.5,
-      active: false,
-      color: new THREE.Color(0.2 + Math.random() * 0.4, 0.9, 1.0),
-    }));
-  }, []);
-
-  const { linePositions, lineColors } = useMemo(() => {
-    const pos = new Float32Array(meteorCount * 2 * 3);
-    const col = new Float32Array(meteorCount * 2 * 3);
-    return { linePositions: pos, lineColors: col };
-  }, []);
-
-  useFrame((_, delta) => {
-    if (!lineMeshRef.current) return;
-    const geo = lineMeshRef.current.geometry;
-    const posAttr = geo.attributes.position as THREE.BufferAttribute;
-    const colAttr = geo.attributes.color as THREE.BufferAttribute;
-
-    meteors.current.forEach((m, idx) => {
-      if (!m.active) {
-        // Randomly spawn meteor
-        if (Math.random() < 0.008) {
-          m.active = true;
-          m.life = 0;
-          m.head.set(
-            20 + (Math.random() - 0.5) * 60,
-            25 + Math.random() * 25,
-            -15 - Math.random() * 30
-          );
-          m.dir.set(-1.0 - Math.random() * 0.8, -0.5 - Math.random() * 0.5, (Math.random() - 0.5) * 0.3).normalize();
-          m.length = 14 + Math.random() * 18;
-          m.speed = 45 + Math.random() * 35;
-        }
-      }
-
-      const pIdx = idx * 6;
-
-      if (m.active) {
-        m.life += delta;
-        m.head.addScaledVector(m.dir, m.speed * delta);
-
-        const tail = m.head.clone().sub(m.dir.clone().multiplyScalar(m.length));
-
-        // Fade in and out
-        const progress = m.life / m.maxLife;
-        let alpha = 1.0;
-        if (progress < 0.2) alpha = progress / 0.2;
-        else if (progress > 0.8) alpha = (1.0 - progress) / 0.2;
-        alpha = Math.max(0, Math.min(1, alpha));
-
-        // Set line segment (Head to Tail)
-        posAttr.setXYZ(idx * 2, m.head.x, m.head.y, m.head.z);
-        posAttr.setXYZ(idx * 2 + 1, tail.x, tail.y, tail.z);
-
-        // Head bright cyan/white, Tail fading
-        colAttr.setXYZ(idx * 2, 1.0 * alpha, 1.0 * alpha, 1.0 * alpha);
-        colAttr.setXYZ(idx * 2 + 1, m.color.r * alpha * 0.1, m.color.g * alpha * 0.1, m.color.b * alpha * 0.1);
-
-        if (m.life >= m.maxLife) {
-          m.active = false;
-        }
-      } else {
-        // Collapsed invisible point
-        posAttr.setXYZ(idx * 2, 0, 0, 0);
-        posAttr.setXYZ(idx * 2 + 1, 0, 0, 0);
-        colAttr.setXYZ(idx * 2, 0, 0, 0);
-        colAttr.setXYZ(idx * 2 + 1, 0, 0, 0);
-      }
+    // 1. Prominent Hero Left Cube (Matching Reference Image Position & Size)
+    list.push({
+      pos: isMobile ? [-5.5, 3.5, -4] : [-10.8, 2.5, -2.5],
+      size: isMobile ? 1.8 : 2.9,
+      rotSpeed: [0.004, 0.007, 0.003],
+      floatSpeed: 0.8,
+      floatAmp: 0.28,
+      offset: 0,
+      hasLight: true,
     });
 
-    posAttr.needsUpdate = true;
-    colAttr.needsUpdate = true;
-  });
+    // 2. Secondary Mid-Left Cubes
+    list.push({
+      pos: [-14.8, 5.8, -8],
+      size: 1.9,
+      rotSpeed: [0.005, -0.006, 0.004],
+      floatSpeed: 0.65,
+      floatAmp: 0.22,
+      offset: 1.4,
+    });
+
+    list.push({
+      pos: [-12.2, -2.8, -6],
+      size: 1.5,
+      rotSpeed: [-0.004, 0.005, -0.003],
+      floatSpeed: 0.9,
+      floatAmp: 0.18,
+      offset: 2.8,
+    });
+
+    // 3. Right-Flanking Cubes around Cloud Sculpture
+    list.push({
+      pos: [14.8, 5.2, -7],
+      size: 1.6,
+      rotSpeed: [0.006, 0.004, -0.005],
+      floatSpeed: 0.75,
+      floatAmp: 0.2,
+      offset: 3.2,
+    });
+
+    list.push({
+      pos: [15.5, -1.8, -6],
+      size: 1.3,
+      rotSpeed: [-0.005, 0.006, 0.003],
+      floatSpeed: 0.85,
+      floatAmp: 0.16,
+      offset: 4.5,
+    });
+
+    // 4. Tiny Distant Background Cubes (Non-interfering, Deep Depth)
+    const count = isMobile ? 3 : 8;
+    for (let i = 0; i < count; i++) {
+      const side = i % 2 === 0 ? -1 : 1;
+      const x = side * (5.5 + Math.random() * 12);
+      const y = -3 + Math.random() * 10;
+      const z = -12 - Math.random() * 16;
+      const s = 0.5 + Math.random() * 0.8;
+
+      list.push({
+        pos: [x, y, z],
+        size: s,
+        rotSpeed: [
+          (Math.random() - 0.5) * 0.008,
+          (Math.random() - 0.5) * 0.01,
+          (Math.random() - 0.5) * 0.006,
+        ],
+        floatSpeed: 0.5 + Math.random() * 0.6,
+        floatAmp: 0.12 + Math.random() * 0.15,
+        offset: Math.random() * Math.PI * 2,
+      });
+    }
+
+    return list;
+  }, [isMobile]);
 
   return (
-    <lineSegments ref={lineMeshRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[lineColors, 3]} />
-      </bufferGeometry>
-      <lineBasicMaterial
-        vertexColors
-        transparent
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        linewidth={2}
-      />
-    </lineSegments>
+    <group>
+      {cubesData.map((cube, idx) => (
+        <GlowingCube
+          key={idx}
+          position={cube.pos}
+          size={cube.size}
+          rotSpeed={cube.rotSpeed}
+          floatSpeed={cube.floatSpeed}
+          floatAmplitude={cube.floatAmp}
+          floatOffset={cube.offset}
+          hasPointLight={cube.hasLight}
+        />
+      ))}
+    </group>
   );
 };
 
 // ============================================================================
-// 5. FOREGROUND FLOATING STARDUST (Ambient Glowing Micro-Particles)
+// 3. MAIN 3D CLOUD SCULPTURE WITH CONSTELLATION & ORBITAL RINGS (Hero Right)
 // ============================================================================
-const FloatingStardust: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
-  const pointsRef = useRef<THREE.Points>(null);
-  const count = isMobile ? 120 : 320;
+const FloatingCloudSculpture: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
+  const cloudGroupRef = useRef<THREE.Group>(null);
+  const nodesRef = useRef<THREE.Points>(null);
+  const linesRef = useRef<THREE.LineSegments>(null);
+  const ring1Ref = useRef<THREE.Mesh>(null);
+  const ring2Ref = useRef<THREE.Mesh>(null);
+  const ring3Ref = useRef<THREE.Mesh>(null);
 
-  const { positions, sizes, twinkleData } = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const sz = new Float32Array(count);
-    const tw = new Float32Array(count * 2);
+  // Cloud position: Right side of screen, elevated above floor (Matching Reference)
+  const basePosition: [number, number, number] = isMobile ? [3.8, 3.2, -6] : [9.6, 3.2, -3.2];
+  const cloudScale = isMobile ? 0.72 : 1.18;
 
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 90;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 80;
-      pos[i * 3 + 2] = -5 - Math.random() * 35;
+  // 1. Internal Constellation Digital Network Nodes & Luminous Connections
+  const { nodePositions, nodeColors, linePositions } = useMemo(() => {
+    const numNodes = isMobile ? 35 : 68;
+    const positions: number[] = [];
+    const colors: number[] = [];
 
-      sz[i] = 1.3 + Math.random() * 1.2;
-      tw[i * 2] = 0.6 + Math.random() * 1.8;
-      tw[i * 2 + 1] = Math.random() * Math.PI * 2;
+    // Cloud lobe boundary approximation
+    const lobes = [
+      { center: [0, 0, 0], r: 2.3 },
+      { center: [-1.85, -0.3, 0.1], r: 1.65 },
+      { center: [1.9, -0.25, 0.1], r: 1.8 },
+      { center: [-0.5, 1.4, -0.05], r: 1.7 },
+      { center: [1.2, 1.2, 0.1], r: 1.45 },
+      { center: [0, -1.0, 0], r: 1.55 },
+    ];
+
+    for (let i = 0; i < numNodes; i++) {
+      const lobe = lobes[Math.floor(Math.random() * lobes.length)];
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = Math.cbrt(Math.random()) * (lobe.r * 0.78);
+
+      const sinPhi = Math.sin(phi);
+      const x = lobe.center[0] + r * sinPhi * Math.cos(theta);
+      const y = lobe.center[1] + r * sinPhi * Math.sin(theta);
+      const z = lobe.center[2] + r * Math.cos(phi) * 0.65;
+
+      positions.push(x, y, z);
+
+      // Warm Golden Amber vs Bright Neutral-White Node Colors
+      if (Math.random() > 0.35) {
+        colors.push(1.0, 0.7, 0.23); // #FFB13B
+      } else {
+        colors.push(1.0, 0.96, 0.85); // Bright Golden White
+      }
     }
 
-    return { positions: pos, sizes: sz, twinkleData: tw };
+    // Connect close nodes with glowing lines
+    const linePairs: number[] = [];
+    for (let i = 0; i < numNodes; i++) {
+      for (let j = i + 1; j < numNodes; j++) {
+        const dx = positions[i * 3] - positions[j * 3];
+        const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+        const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (dist < 1.75) {
+          linePairs.push(
+            positions[i * 3],
+            positions[i * 3 + 1],
+            positions[i * 3 + 2],
+            positions[j * 3],
+            positions[j * 3 + 1],
+            positions[j * 3 + 2]
+          );
+        }
+      }
+    }
+
+    return {
+      nodePositions: new Float32Array(positions),
+      nodeColors: new Float32Array(colors),
+      linePositions: new Float32Array(linePairs),
+    };
+  }, [isMobile]);
+
+  // 2. Multi-Lobe Parametric Mesh Geometries for Smooth Cloud Silhouette
+  const cloudLobeGeometries = useMemo(() => {
+    return [
+      { geo: new THREE.SphereGeometry(2.35, 36, 28), pos: [0, 0, 0] as [number, number, number], scale: [1.15, 0.92, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.7, 32, 24), pos: [-1.85, -0.32, 0.12] as [number, number, number], scale: [1.02, 0.92, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.88, 32, 24), pos: [1.9, -0.28, 0.1] as [number, number, number], scale: [1.02, 0.92, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.72, 32, 24), pos: [-0.48, 1.4, -0.06] as [number, number, number], scale: [1.0, 0.95, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.42, 28, 20), pos: [1.22, 1.2, 0.12] as [number, number, number], scale: [1.0, 0.9, 0.78] as [number, number, number] },
+      { geo: new THREE.SphereGeometry(1.55, 28, 20), pos: [0, -1.0, 0] as [number, number, number], scale: [1.55, 0.65, 0.78] as [number, number, number] },
+    ];
+  }, []);
+
+  // 3. Elegant Thin 3D Orbital Torus Rings
+  const ringGeometries = useMemo(() => {
+    return {
+      ring1: new THREE.TorusGeometry(4.3, 0.038, 16, 120),
+      ring2: new THREE.TorusGeometry(5.0, 0.028, 16, 120),
+      ring3: new THREE.TorusGeometry(4.6, 0.032, 16, 120),
+    };
+  }, []);
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+
+    if (cloudGroupRef.current) {
+      // Gentle vertical floating levitation
+      cloudGroupRef.current.position.y = basePosition[1] + Math.sin(t * 0.85) * 0.28;
+      // Extremely subtle rotation
+      cloudGroupRef.current.rotation.y = Math.sin(t * 0.35) * 0.07;
+      cloudGroupRef.current.rotation.x = Math.cos(t * 0.28) * 0.035;
+    }
+
+    // Orbital Rings Slow Continuous Rotation at Differential Angles & Speeds
+    if (ring1Ref.current) {
+      ring1Ref.current.rotation.z = t * 0.16;
+      ring1Ref.current.rotation.x = 0.52 + Math.sin(t * 0.12) * 0.04;
+    }
+    if (ring2Ref.current) {
+      ring2Ref.current.rotation.z = -t * 0.13;
+      ring2Ref.current.rotation.y = 0.64 + Math.cos(t * 0.1) * 0.05;
+    }
+    if (ring3Ref.current) {
+      ring3Ref.current.rotation.z = t * 0.11;
+      ring3Ref.current.rotation.x = -0.42 + Math.sin(t * 0.15) * 0.03;
+    }
+
+    // Dynamic node twinkle
+    if (nodesRef.current) {
+      const mat = nodesRef.current.material as THREE.PointsMaterial;
+      if (mat) {
+        mat.size = 0.13 + Math.sin(t * 2.2) * 0.025;
+      }
+    }
+  });
+
+  return (
+    <group ref={cloudGroupRef} position={basePosition} scale={cloudScale}>
+      {/* Central Core Warm Amber Point Lights */}
+      <pointLight color="#FF9F1C" intensity={5.2} distance={18} decay={2} />
+      <pointLight color="#FFC15A" intensity={2.6} distance={9} decay={2} />
+
+      {/* Cloud Outer Glass Shell Lobes */}
+      {cloudLobeGeometries.map((lobe, idx) => (
+        <group key={idx} position={lobe.pos} scale={lobe.scale}>
+          {/* Dark Smoky Semi-Transparent Glass Body */}
+          <mesh geometry={lobe.geo}>
+            <meshPhysicalMaterial
+              color="#141210"
+              roughness={0.1}
+              metalness={0.45}
+              transmission={0.68}
+              thickness={1.4}
+              transparent={true}
+              opacity={0.78}
+              reflectivity={0.92}
+              clearcoat={1.0}
+              clearcoatRoughness={0.06}
+            />
+          </mesh>
+
+          {/* Intense Golden-Amber Perimeter Rim Glow Contour */}
+          <mesh geometry={lobe.geo} scale={[1.026, 1.026, 1.026]}>
+            <meshStandardMaterial
+              color="#FFC15A"
+              emissive="#FF8C22"
+              emissiveIntensity={3.4}
+              wireframe={true}
+              transparent={true}
+              opacity={0.4}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Internal Constellation Network Nodes */}
+      <points ref={nodesRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[nodePositions, 3]} />
+          <bufferAttribute attach="attributes-color" args={[nodeColors, 3]} />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.14}
+          vertexColors={true}
+          transparent={true}
+          opacity={0.95}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </points>
+
+      {/* Internal Connecting Luminous Lines */}
+      <lineSegments ref={linesRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
+        </bufferGeometry>
+        <lineBasicMaterial
+          color="#FFB13B"
+          transparent={true}
+          opacity={0.52}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </lineSegments>
+
+      {/* Orbital Ring 1 */}
+      <mesh ref={ring1Ref} geometry={ringGeometries.ring1} rotation={[0.55, 0.22, 0]}>
+        <meshStandardMaterial
+          color="#FFC15A"
+          emissive="#FF8C22"
+          emissiveIntensity={3.2}
+          roughness={0.18}
+          metalness={0.92}
+        />
+      </mesh>
+
+      {/* Orbital Ring 2 */}
+      <mesh ref={ring2Ref} geometry={ringGeometries.ring2} rotation={[-0.42, 0.62, 0.32]}>
+        <meshStandardMaterial
+          color="#FFB13B"
+          emissive="#FF8C22"
+          emissiveIntensity={2.9}
+          roughness={0.18}
+          metalness={0.92}
+        />
+      </mesh>
+
+      {/* Orbital Ring 3 */}
+      <mesh ref={ring3Ref} geometry={ringGeometries.ring3} rotation={[0.32, -0.48, 0.72]}>
+        <meshStandardMaterial
+          color="#FFE2A0"
+          emissive="#FFB13B"
+          emissiveIntensity={2.6}
+          roughness={0.18}
+          metalness={0.92}
+        />
+      </mesh>
+    </group>
+  );
+};
+
+// ============================================================================
+// 4. ARCHITECTURAL HEADQUARTERS ENVIRONMENT (Columns, Reflective Floor, Planters)
+// ============================================================================
+const ArchitecturalEnvironment: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
+  const { floorGeo, pillarGeo, lightStripGeo, glassMullionGeo, ledgeGeo, planterBoxGeo, plantBushGeo } = useMemo(() => {
+    return {
+      floorGeo: new THREE.PlaneGeometry(90, 90, 24, 24),
+      pillarGeo: new THREE.BoxGeometry(1.6, 24, 1.6),
+      lightStripGeo: new THREE.BoxGeometry(0.12, 22, 0.12),
+      glassMullionGeo: new THREE.BoxGeometry(0.15, 24, 0.15),
+      ledgeGeo: new THREE.BoxGeometry(20, 0.7, 3.5),
+      planterBoxGeo: new THREE.BoxGeometry(5.5, 0.9, 1.8),
+      plantBushGeo: new THREE.SphereGeometry(1.1, 14, 10),
+    };
+  }, []);
+
+  const pillars = useMemo(() => {
+    return [
+      { pos: [-19, 4.5, -22] as [number, number, number] },
+      { pos: [-12, 4.5, -26] as [number, number, number] },
+      { pos: [-4, 4.5, -30] as [number, number, number] },
+      { pos: [4, 4.5, -30] as [number, number, number] },
+      { pos: [12, 4.5, -26] as [number, number, number] },
+      { pos: [19, 4.5, -22] as [number, number, number] },
+    ];
+  }, []);
+
+  const plants = useMemo(() => {
+    return [
+      { pos: [-13.5, -4.2, -18] as [number, number, number], scale: [1.2, 0.9, 1.0] as [number, number, number] },
+      { pos: [-15.2, -4.1, -18.5] as [number, number, number], scale: [0.9, 1.1, 0.9] as [number, number, number] },
+      { pos: [13.5, -4.2, -18] as [number, number, number], scale: [1.2, 0.9, 1.0] as [number, number, number] },
+      { pos: [15.2, -4.1, -18.5] as [number, number, number], scale: [0.9, 1.1, 0.9] as [number, number, number] },
+    ];
+  }, []);
+
+  return (
+    <group>
+      {/* 1. Polished Dark Reflective Architectural Floor */}
+      <mesh geometry={floorGeo} position={[0, -5.6, -15]} rotation={[-Math.PI / 2, 0, 0]}>
+        <meshStandardMaterial
+          color="#0c0e11"
+          roughness={0.2}
+          metalness={0.9}
+        />
+      </mesh>
+
+      {/* Ambient Warm Golden Specular Floor Reflection Pool */}
+      <mesh geometry={floorGeo} position={[0, -5.58, -15]} rotation={[-Math.PI / 2, 0, 0]}>
+        <meshBasicMaterial
+          color="#78350f"
+          transparent={true}
+          opacity={0.07}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+
+      {/* 2. Vertical Dark Graphite Architectural Pillars with Embedded Warm LED Strips */}
+      {pillars.map((pillar, idx) => (
+        <group key={idx} position={pillar.pos}>
+          {/* Main Dark Metallic Graphite Column */}
+          <mesh geometry={pillarGeo}>
+            <meshStandardMaterial
+              color="#171A1D"
+              roughness={0.3}
+              metalness={0.85}
+            />
+          </mesh>
+
+          {/* Embedded Warm Amber Vertical LED Channel */}
+          <mesh geometry={lightStripGeo} position={[0, 0, 0.85]}>
+            <meshBasicMaterial
+              color="#FFB13B"
+              transparent={true}
+              opacity={0.75}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+        </group>
+      ))}
+
+      {/* 3. Distant Architectural Glass Panel Mullions */}
+      <mesh geometry={glassMullionGeo} position={[-8, 4.5, -28]}>
+        <meshStandardMaterial color="#22262A" roughness={0.2} metalness={0.9} />
+      </mesh>
+      <mesh geometry={glassMullionGeo} position={[8, 4.5, -28]}>
+        <meshStandardMaterial color="#22262A" roughness={0.2} metalness={0.9} />
+      </mesh>
+
+      {/* 4. Distant Architectural Ledges & Planter Boxes */}
+      <mesh geometry={ledgeGeo} position={[-14, -4.8, -18]}>
+        <meshStandardMaterial color="#111417" roughness={0.35} metalness={0.75} />
+      </mesh>
+      <mesh geometry={ledgeGeo} position={[14, -4.8, -18]}>
+        <meshStandardMaterial color="#111417" roughness={0.35} metalness={0.75} />
+      </mesh>
+
+      {/* Planter Boxes */}
+      <mesh geometry={planterBoxGeo} position={[-14, -4.4, -18]}>
+        <meshStandardMaterial color="#171A1D" roughness={0.4} metalness={0.6} />
+      </mesh>
+      <mesh geometry={planterBoxGeo} position={[14, -4.4, -18]}>
+        <meshStandardMaterial color="#171A1D" roughness={0.4} metalness={0.6} />
+      </mesh>
+
+      {/* Subtle Indoor Botanical Foliage in Planters */}
+      {plants.map((plant, idx) => (
+        <mesh key={idx} geometry={plantBushGeo} position={plant.pos} scale={plant.scale}>
+          <meshStandardMaterial
+            color="#1b2e23"
+            roughness={0.65}
+            metalness={0.15}
+          />
+        </mesh>
+      ))}
+
+      {/* Warm Ambient Downlights on Architectural Ledges */}
+      <pointLight position={[-14, -3.2, -16]} color="#FFB13B" intensity={1.8} distance={12} decay={2} />
+      <pointLight position={[14, -3.2, -16]} color="#FFB13B" intensity={2.0} distance={14} decay={2} />
+    </group>
+  );
+};
+
+// ============================================================================
+// 5. ATMOSPHERIC GOLDEN AMBER LIGHT MOTES (Luminous Drifting Particles)
+// ============================================================================
+const AtmosphericAmberMotes: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
+  const pointsRef = useRef<THREE.Points>(null);
+  const count = isMobile ? 90 : 220;
+
+  const { positions, sizes, speeds } = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const sz = new Float32Array(count);
+    const sp = new Float32Array(count);
+
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 44;
+      pos[i * 3 + 1] = -5 + Math.random() * 20;
+      pos[i * 3 + 2] = 2 - Math.random() * 30;
+
+      sz[i] = 1.1 + Math.random() * 2.0;
+      sp[i] = 0.35 + Math.random() * 0.7;
+    }
+
+    return { positions: pos, sizes: sz, speeds: sp };
   }, [count]);
 
   const shaderArgs = useMemo(() => {
@@ -549,23 +620,20 @@ const FloatingStardust: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }
         uniform float uTime;
         uniform float uPixelRatio;
         attribute float aSize;
-        attribute vec2 aTwinkle;
+        attribute float aSpeed;
         varying float vAlpha;
 
         void main() {
-          float speed = aTwinkle.x;
-          float phase = aTwinkle.y;
-          float twinkle = sin(uTime * speed + phase) * 0.35 + 0.65;
-          vAlpha = twinkle;
+          vec3 pos = position;
+          pos.y += mod(uTime * aSpeed * 0.35, 20.0) - 5.0;
+          pos.x += sin(uTime * 0.45 + position.y) * 0.25;
 
-          // Gentle ambient float
-          vec3 p = position;
-          p.y += sin(uTime * 0.4 + position.x * 0.05) * 0.8;
-          p.x += cos(uTime * 0.3 + position.y * 0.05) * 0.5;
+          float twinkle = sin(uTime * 1.8 + position.x * 2.5) * 0.35 + 0.65;
+          vAlpha = twinkle * 0.8;
 
-          vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
           gl_Position = projectionMatrix * mvPosition;
-          gl_PointSize = (aSize * (290.0 / -mvPosition.z)) * uPixelRatio * (0.85 + 0.25 * twinkle);
+          gl_PointSize = (aSize * (200.0 / -mvPosition.z)) * uPixelRatio;
         }
       `,
       fragmentShader: `
@@ -576,13 +644,9 @@ const FloatingStardust: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }
           float dist = length(coord);
           if (dist > 0.5) discard;
 
-          float core = smoothstep(0.5, 0.04, dist);
-          float glow = exp(-dist * 4.2) * 0.6;
-          float intensity = core + glow;
-
-          // Glowing cyan-emerald stardust
-          vec3 col = mix(vec3(0.0, 0.9, 1.0), vec3(1.0, 1.0, 1.0), core);
-          gl_FragColor = vec4(col, intensity * vAlpha * 0.85);
+          float intensity = smoothstep(0.5, 0.05, dist);
+          // Warm Golden Amber Luminous Falloff (#FFB13B)
+          gl_FragColor = vec4(1.0, 0.76, 0.32, intensity * vAlpha);
         }
       `,
       transparent: true,
@@ -594,7 +658,6 @@ const FloatingStardust: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (pointsRef.current) {
-      pointsRef.current.rotation.y = t * 0.007;
       const mat = pointsRef.current.material as THREE.ShaderMaterial;
       if (mat?.uniforms?.uTime) {
         mat.uniforms.uTime.value = t;
@@ -607,7 +670,7 @@ const FloatingStardust: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
-        <bufferAttribute attach="attributes-aTwinkle" args={[twinkleData, 2]} />
+        <bufferAttribute attach="attributes-aSpeed" args={[speeds, 1]} />
       </bufferGeometry>
       <shaderMaterial attach="material" args={[shaderArgs]} />
     </points>
@@ -615,9 +678,9 @@ const FloatingStardust: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }
 };
 
 // ============================================================================
-// 6. INTERACTIVE MOUSE & SCROLL PARALLAX CAMERA RIG
+// 6. LUXURY PARALLAX CAMERA RIG (Passive Smooth Mouse Easing & Scroll Parallax)
 // ============================================================================
-const SpaceParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const LuxuryParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const groupRef = useRef<THREE.Group>(null);
   const scrollRef = useRef<number>(0);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -660,30 +723,30 @@ const SpaceParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children })
       return;
     }
 
-    // Smooth responsive mouse parallax
-    const targetMouseX = (state.pointer.x * Math.PI) / 14;
-    const targetMouseY = (-state.pointer.y * Math.PI) / 16;
+    // Subtle, restrained luxury mouse parallax
+    const targetMouseX = (state.pointer.x * Math.PI) / 20;
+    const targetMouseY = (-state.pointer.y * Math.PI) / 24;
 
     // Scroll vertical progression parallax
-    const scrollOffset = scrollRef.current * 7.0;
+    const scrollOffset = scrollRef.current * 4.0;
 
     groupRef.current.rotation.y = THREE.MathUtils.damp(
       groupRef.current.rotation.y,
       targetMouseX,
-      2.5,
+      2.0,
       delta
     );
     groupRef.current.rotation.x = THREE.MathUtils.damp(
       groupRef.current.rotation.x,
-      targetMouseY + scrollRef.current * 0.12,
-      2.5,
+      targetMouseY + (scrollRef.current * 0.04),
+      2.0,
       delta
     );
 
     groupRef.current.position.y = THREE.MathUtils.damp(
       groupRef.current.position.y,
       scrollOffset,
-      2.0,
+      1.8,
       delta
     );
   });
@@ -692,7 +755,7 @@ const SpaceParallaxRig: React.FC<{ children: React.ReactNode }> = ({ children })
 };
 
 // ============================================================================
-// 7. MASTER GLOBAL 3D SPACE BACKGROUND EXPORT
+// 7. MASTER GLOBAL 3D BACKGROUND EXPORT (Futuristic Headquarters Environment)
 // ============================================================================
 export const GlobalSpaceBackground: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -709,49 +772,60 @@ export const GlobalSpaceBackground: React.FC = () => {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-black select-none"
+      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-[#080A0C] select-none"
     >
-      {/* Deep Obsidian Cosmos Base */}
-      <div className="absolute inset-0 bg-[#000000]" />
+      {/* Layer 1: Atmospheric Architectural Backdrop Gradient (Dark Graphite / Charcoal & Warm Amber Depth) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#080A0C] via-[#111417] to-[#080A0C]" />
 
-      {/* Subtle Radial Celestial Ambient Backdrop */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-40"
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 60% at 50% 20%, rgba(6, 182, 212, 0.12) 0%, rgba(15, 23, 42, 0.08) 50%, transparent 80%)',
-        }}
-      />
+      {/* Atmospheric Warm Golden-Amber Cove & Horizon Glow (Matching Reference Image) */}
+      <div className="absolute top-1/4 right-1/12 w-[680px] h-[580px] bg-gradient-to-b from-[#FFB13B]/14 via-[#FF8C22]/8 to-transparent rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/12 w-[480px] h-[420px] bg-gradient-to-b from-[#FF8C22]/10 via-[#FFB13B]/5 to-transparent rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-[360px] bg-gradient-to-t from-black/85 via-black/35 to-transparent pointer-events-none" />
 
-      {/* 3D WebGL Three.js Scene */}
+      {/* Architectural Horizontal Ambient Recessed Light Bands */}
+      <div className="absolute top-[18%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFB13B]/20 to-transparent pointer-events-none" />
+      <div className="absolute top-[48%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFB13B]/15 to-transparent pointer-events-none" />
+
+      {/* Layer 2: 3D WebGL Three.js Scene */}
       <Canvas
-        camera={{ position: [0, 0, 32], fov: 60 }}
+        camera={{ position: [0, 1.2, 17.5], fov: 48 }}
         gl={{
-          antialias: false,
+          antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
           stencil: false,
-          depth: false,
+          depth: true,
         }}
         dpr={[1, 1.5]}
         performance={{ min: 0.8 }}
       >
-        <SpaceParallaxRig>
-          {/* 1. Volumetric Deep Space Cosmic Nebulae */}
-          <CosmicNebulaPlane />
+        {/* Cinematic Atmospheric Scene Lighting */}
+        <ambientLight intensity={0.85} color="#1d1e22" />
+        <directionalLight
+          position={[16, 22, 12]}
+          intensity={2.4}
+          color="#FFE9C2"
+        />
+        <directionalLight
+          position={[-16, 12, -4]}
+          intensity={0.95}
+          color="#DDE7EA" // subtle neutral-cool highlight for depth separation
+        />
 
-          {/* 2. Multi-Color Twinkling Distant Starfield */}
-          <DistantStarfield isMobile={isMobile} />
+        {/* Parallax Rig wrapping all 3D scene elements */}
+        <LuxuryParallaxRig>
+          {/* Architectural Headquarters Interior (Columns, Floor, Planters) */}
+          <ArchitecturalEnvironment isMobile={isMobile} />
 
-          {/* 3. Constellation Nodes & Glowing Major Stars */}
-          <ConstellationMesh isMobile={isMobile} />
+          {/* Floating Smoked Metallic Glass Cubes with Glowing Amber Edges */}
+          <AmbientFloatingCubes isMobile={isMobile} />
 
-          {/* 4. Dynamic Comets & Shooting Stars */}
-          <MeteorsSystem />
+          {/* Main 3D Floating Cloud Hologram Sculpture with Constellation & Orbital Rings */}
+          <FloatingCloudSculpture isMobile={isMobile} />
 
-          {/* 5. Floating Glowing Stardust */}
-          <FloatingStardust isMobile={isMobile} />
-        </SpaceParallaxRig>
+          {/* Floating Atmospheric Golden Amber Light Motes */}
+          <AtmosphericAmberMotes isMobile={isMobile} />
+        </LuxuryParallaxRig>
       </Canvas>
     </div>
   );
