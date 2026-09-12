@@ -199,12 +199,12 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
   return (
     <section
       id="about-us"
-      className="relative w-full bg-black/40 text-white overflow-hidden scroll-mt-14"
+      className="relative w-full bg-[#080a0c]/60 text-white overflow-hidden scroll-mt-14"
     >
       {/* Ambient background glow accents */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent pointer-events-none" />
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-2/3 left-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-amber-400/40 to-transparent pointer-events-none" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-2/3 left-0 w-96 h-96 bg-amber-600/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* ========================================================================= */}
       {/* 1. WE ARE CLOUDFEN - OVERVIEW & 3 PILLARS                                  */}
@@ -212,21 +212,21 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
       <div className="py-20 sm:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-4xl mx-auto mb-16 sm:mb-20 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/60 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-2">
             <Building2 className="w-3.5 h-3.5" />
             <span>About Our Company</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight uppercase">
             <span className="text-white">WE ARE </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-400 to-cyan-300">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400">
               CLOUDFEN
             </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-slate-300 font-normal">
             One of the most Versatile Software Solutions Company.
           </p>
-          <div className="w-16 h-1 bg-gradient-to-r from-teal-400 to-cyan-400 mx-auto mt-4 rounded-full" />
+          <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-yellow-400 mx-auto mt-4 rounded-full" />
         </div>
 
         {/* 3 Pillars Grid */}
@@ -236,7 +236,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
             return (
               <div
                 key={idx}
-                className="group flex flex-col bg-zinc-900/80 border border-zinc-800 hover:border-cyan-500/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_10px_30px_rgba(6,182,212,0.15)] hover:-translate-y-1.5"
+                className="group flex flex-col bg-[#111417]/85 border border-zinc-800 hover:border-amber-500/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_10px_30px_rgba(255,177,59,0.15)] hover:-translate-y-1.5"
               >
                 {/* Image Banner */}
                 <div className="relative w-full h-56 sm:h-64 overflow-hidden bg-zinc-800">
@@ -249,7 +249,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
 
                   {/* Badge */}
-                  <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-cyan-500/30 text-cyan-300 text-xs font-semibold tracking-wider">
+                  <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wider">
                     <IconComponent className="w-3.5 h-3.5" />
                     <span>{card.tag}</span>
                   </div>
@@ -258,10 +258,10 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
                 {/* Card Body */}
                 <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-1.5">
-                    <h3 className="text-lg sm:text-xl font-bold tracking-wider uppercase text-white group-hover:text-cyan-300 transition-colors">
+                    <h3 className="text-lg sm:text-xl font-bold tracking-wider uppercase text-white group-hover:text-amber-300 transition-colors">
                       {card.title}
                     </h3>
-                    <p className="text-sm font-medium text-cyan-400/90">
+                    <p className="text-sm font-medium text-amber-400/90">
                       {card.subtitle}
                     </p>
                   </div>
@@ -279,7 +279,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
       {/* ========================================================================= */}
       {/* 2. INTERACTIVE OFFICE ENVIRONMENT (SLIDER / GALLERY AS PER SCREENSHOT)    */}
       {/* ========================================================================= */}
-      <div className="relative py-16 sm:py-24 bg-zinc-950 border-y border-zinc-800/80">
+      <div className="relative py-16 sm:py-24 bg-[#0d1013] border-y border-zinc-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Header matching screenshot */}
           <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 space-y-3">
@@ -289,12 +289,12 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
             <p className="text-sm sm:text-base md:text-lg text-slate-300 font-normal leading-relaxed">
               We value Work Ethics & Environment as it helps in creating a Creative Thinktank
             </p>
-            <div className="w-14 h-1 bg-cyan-400 mx-auto mt-3 rounded-full" />
+            <div className="w-14 h-1 bg-amber-400 mx-auto mt-3 rounded-full" />
           </div>
 
           {/* Interactive Office Slider Container */}
           <div
-            className="relative w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-zinc-800 bg-black shadow-[0_20px_50px_rgba(0,0,0,0.8)] group/slider"
+            className="relative w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-zinc-800 bg-[#080a0c] shadow-[0_20px_50px_rgba(0,0,0,0.8)] group/slider"
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
           >
@@ -322,8 +322,8 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
                   {/* Slide Overlay Info */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 z-20">
                     <div className="space-y-2 max-w-2xl">
-                      <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-semibold">
-                        <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                      <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold">
+                        <span className="w-2 h-2 rounded-full bg-amber-400" />
                         <span>{slide.location}</span>
                       </div>
                       <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-wide">
@@ -338,7 +338,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
                       <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">
                         Environment Highlight
                       </span>
-                      <span className="text-xs sm:text-sm font-medium text-cyan-300">
+                      <span className="text-xs sm:text-sm font-medium text-amber-300">
                         {slide.highlight}
                       </span>
                     </div>
@@ -350,7 +350,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
               <button
                 onClick={prevSlide}
                 type="button"
-                className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-cyan-500/80 text-white border border-white/20 hover:border-cyan-400 transition-all duration-200 backdrop-blur-md cursor-pointer hover:scale-110 shadow-lg"
+                className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-amber-500/80 text-white hover:text-black border border-white/20 hover:border-amber-400 transition-all duration-200 backdrop-blur-md cursor-pointer hover:scale-110 shadow-lg"
                 aria-label="Previous Office Slide"
               >
                 <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -360,7 +360,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
               <button
                 onClick={nextSlide}
                 type="button"
-                className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-cyan-500/80 text-white border border-white/20 hover:border-cyan-400 transition-all duration-200 backdrop-blur-md cursor-pointer hover:scale-110 shadow-lg"
+                className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-amber-500/80 text-white hover:text-black border border-white/20 hover:border-amber-400 transition-all duration-200 backdrop-blur-md cursor-pointer hover:scale-110 shadow-lg"
                 aria-label="Next Office Slide"
               >
                 <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -389,7 +389,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
             </div>
 
             {/* Slider Dots Indicator */}
-            <div className="bg-zinc-950 px-6 py-4 flex items-center justify-between border-t border-zinc-800">
+            <div className="bg-[#080a0c] px-6 py-4 flex items-center justify-between border-t border-zinc-800">
               <span className="text-xs font-mono text-slate-400">
                 0{currentSlide + 1} / 0{officeSlides.length}
               </span>
@@ -402,7 +402,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
                     onClick={() => setCurrentSlide(idx)}
                     className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                       idx === currentSlide
-                        ? 'w-8 bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]'
+                        ? 'w-8 bg-amber-400 shadow-[0_0_8px_rgba(255,177,59,0.8)]'
                         : 'w-2 bg-zinc-700 hover:bg-zinc-500'
                     }`}
                     aria-label={`Jump to slide ${idx + 1}`}
@@ -425,7 +425,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Image with layered glow card */}
           <div className="lg:col-span-6 relative">
-            <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 shadow-2xl group">
+            <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-[#111417] shadow-2xl group">
               <img
                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=85"
                 alt="CloudFen Team in Client Strategy & Solution Architecture Meeting"
@@ -435,30 +435,30 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
 
               {/* Floating Stat Badge */}
-              <div className="absolute bottom-5 left-5 right-5 p-4 rounded-xl bg-black/80 backdrop-blur-xl border border-cyan-500/30 flex items-center justify-between">
+              <div className="absolute bottom-5 left-5 right-5 p-4 rounded-xl bg-[#080a0c]/85 backdrop-blur-xl border border-amber-500/30 flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-cyan-400 font-semibold uppercase tracking-wider">
+                  <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider">
                     Client Partnership Index
                   </p>
                   <p className="text-lg sm:text-xl font-bold text-white">
                     98.6% Long-Term Retention
                   </p>
                 </div>
-                <div className="w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300">
+                <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
                   <HeartHandshake className="w-5 h-5" />
                 </div>
               </div>
             </div>
 
             {/* Background glowing frame accent */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500/10 to-teal-500/10 rounded-3xl -z-10 blur-xl" />
+            <div className="absolute -inset-2 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 rounded-3xl -z-10 blur-xl" />
           </div>
 
           {/* Right Column: Exact Copy & Rich Enhancements */}
           <div className="lg:col-span-6 space-y-6">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold tracking-wide uppercase">
-                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wide uppercase">
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
                 <span>Trusted Engineering Alliance</span>
               </div>
 
@@ -484,10 +484,10 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
                 return (
                   <div
                     key={idx}
-                    className="p-4 rounded-xl bg-zinc-900/70 border border-zinc-800/90 hover:border-cyan-500/40 transition-colors space-y-1.5"
+                    className="p-4 rounded-xl bg-[#111417]/70 border border-zinc-800/90 hover:border-amber-500/40 transition-colors space-y-1.5"
                   >
-                    <div className="flex items-center gap-2 text-cyan-400 font-semibold text-xs sm:text-sm">
-                      <IconComponent className="w-4 h-4 shrink-0 text-cyan-300" />
+                    <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs sm:text-sm">
+                      <IconComponent className="w-4 h-4 shrink-0 text-amber-300" />
                       <span>{item.title}</span>
                     </div>
                     <p className="text-xs text-slate-400 leading-normal">
@@ -514,7 +514,7 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
       {/* ========================================================================= */}
       {/* 4. CULTURE & WORK ETHICS VALUES GRID (CREATIVE THINKTANK VALUES)          */}
       {/* ========================================================================= */}
-      <div className="py-16 sm:py-24 bg-gradient-to-b from-zinc-950 to-black border-t border-zinc-800/80">
+      <div className="py-16 sm:py-24 bg-gradient-to-b from-[#080a0c] to-[#040608] border-t border-zinc-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-14 space-y-2">
             <h4 className="text-xl sm:text-2xl md:text-3xl font-bold uppercase tracking-tight text-white">
@@ -531,13 +531,13 @@ export const WeAreCloudFen: React.FC<WeAreCloudFenProps> = ({ onOpenDemo }) => {
               return (
                 <div
                   key={idx}
-                  className="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-cyan-500/50 hover:bg-zinc-900/90 transition-all duration-300 space-y-4 hover:-translate-y-1"
+                  className="p-6 rounded-2xl bg-[#111417]/60 border border-zinc-800/80 hover:border-amber-500/50 hover:bg-[#111417]/90 transition-all duration-300 space-y-4 hover:-translate-y-1"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-2xl font-extrabold text-cyan-400/40">
+                    <span className="font-mono text-2xl font-extrabold text-amber-400/40">
                       {val.number}
                     </span>
-                    <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-400/20 text-cyan-300">
+                    <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-400/20 text-amber-300">
                       <IconComponent className="w-5 h-5" />
                     </div>
                   </div>

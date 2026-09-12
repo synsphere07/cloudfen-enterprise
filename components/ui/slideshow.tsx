@@ -285,11 +285,11 @@ export const Slideshow: React.FC<SlideshowProps> = ({
                   {/* Tag Pill */}
                   {slide.tag && (
                     <div
-                      className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono tracking-widest uppercase bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 backdrop-blur-md shadow-[0_0_15px_rgba(6,182,212,0.25)] transition-all duration-700 delay-100 ${
+                      className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono tracking-widest uppercase bg-amber-500/15 border border-amber-400/40 text-amber-300 backdrop-blur-md shadow-[0_0_15px_rgba(255,177,59,0.25)] transition-all duration-700 delay-100 ${
                         isActive ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                       }`}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                       <span>{slide.tag}</span>
                     </div>
                   )}
@@ -351,7 +351,7 @@ export const Slideshow: React.FC<SlideshowProps> = ({
                     {slide.secondaryCta && (
                       <a
                         href={slide.secondaryCta.href}
-                        className="px-6 py-3 rounded-full text-xs sm:text-sm font-medium tracking-wide text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/40 backdrop-blur-md transition-all duration-300"
+                        className="px-6 py-3 rounded-full text-xs sm:text-sm font-medium tracking-wide text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/40 backdrop-blur-md transition-all duration-300"
                       >
                         {slide.secondaryCta.text}
                       </a>
@@ -371,7 +371,7 @@ export const Slideshow: React.FC<SlideshowProps> = ({
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
-            className="pointer-events-auto p-3 sm:p-4 rounded-full bg-black/40 hover:bg-black/70 text-slate-300 hover:text-white border border-white/10 hover:border-cyan-400/40 backdrop-blur-lg shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 cursor-pointer group"
+            className="pointer-events-auto p-3 sm:p-4 rounded-full bg-black/40 hover:bg-[#111417] text-slate-300 hover:text-amber-300 border border-white/10 hover:border-amber-400/40 backdrop-blur-lg shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 cursor-pointer group"
           >
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 group-hover:-translate-x-0.5 transition-transform" />
           </button>
@@ -379,7 +379,7 @@ export const Slideshow: React.FC<SlideshowProps> = ({
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
-            className="pointer-events-auto p-3 sm:p-4 rounded-full bg-black/40 hover:bg-black/70 text-slate-300 hover:text-white border border-white/10 hover:border-cyan-400/40 backdrop-blur-lg shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 cursor-pointer group"
+            className="pointer-events-auto p-3 sm:p-4 rounded-full bg-black/40 hover:bg-[#111417] text-slate-300 hover:text-amber-300 border border-white/10 hover:border-amber-400/40 backdrop-blur-lg shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 cursor-pointer group"
           >
             <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-0.5 transition-transform" />
           </button>
@@ -400,7 +400,7 @@ export const Slideshow: React.FC<SlideshowProps> = ({
                   aria-label={`Go to slide ${i + 1}`}
                   className={`h-1.5 transition-all duration-500 rounded-full cursor-pointer ${
                     i === current
-                      ? 'w-8 sm:w-12 bg-gradient-to-r from-cyan-400 to-teal-300 shadow-[0_0_10px_rgba(6,182,212,0.8)]'
+                      ? 'w-8 sm:w-12 bg-gradient-to-r from-amber-400 to-yellow-300 shadow-[0_0_10px_rgba(255,177,59,0.8)]'
                       : 'w-2 sm:w-3 bg-white/20 hover:bg-white/40'
                   }`}
                 />
@@ -413,7 +413,7 @@ export const Slideshow: React.FC<SlideshowProps> = ({
             {/* Slide Counter (e.g., 01 / 05) */}
             {showCounter && (
               <div className="text-xs sm:text-sm font-mono tracking-widest text-slate-400 bg-black/40 border border-white/10 px-3 py-1 rounded-full backdrop-blur-md">
-                <span className="text-cyan-400 font-bold">
+                <span className="text-amber-400 font-bold">
                   {String(current + 1).padStart(2, '0')}
                 </span>
                 <span className="text-slate-600 mx-1.5">/</span>
@@ -426,7 +426,7 @@ export const Slideshow: React.FC<SlideshowProps> = ({
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
                 aria-label={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
-                className="p-1.5 rounded-full bg-black/40 hover:bg-black/60 border border-white/10 text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer"
+                className="p-1.5 rounded-full bg-black/40 hover:bg-black/60 border border-white/10 text-slate-400 hover:text-amber-300 transition-colors cursor-pointer"
                 title={isPlaying ? 'Pause Autoplay' : 'Resume Autoplay'}
               >
                 {isPlaying ? (

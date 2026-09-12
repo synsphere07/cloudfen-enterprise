@@ -239,7 +239,7 @@ export function LiquidMetalButton({
                 <ArrowRight
                   size={16}
                   className={`transition-all duration-300 ${
-                    isHovered ? 'text-cyan-300 scale-110 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' : 'text-slate-200'
+                    isHovered ? 'text-amber-300 scale-110 drop-shadow-[0_0_8px_rgba(255,177,59,0.8)]' : 'text-slate-200'
                   }`}
                   style={{
                     filter: 'drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.8))',
@@ -297,9 +297,9 @@ export function LiquidMetalButton({
             <span
               className="tracking-wider uppercase font-bold text-xs sm:text-sm select-none"
               style={{
-                color: isHovered ? '#67e8f9' : '#f8fafc',
+                color: isHovered ? '#ffe2a0' : '#f8fafc',
                 textShadow: isHovered
-                  ? '0px 0px 12px rgba(6, 182, 212, 0.7), 0px 1px 3px rgba(0,0,0,0.9)'
+                  ? '0px 0px 14px rgba(255, 177, 59, 0.8), 0px 1px 3px rgba(0,0,0,0.9)'
                   : '0px 1px 3px rgba(0, 0, 0, 0.8)',
                 transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
                 whiteSpace: 'nowrap',
@@ -331,12 +331,12 @@ export function LiquidMetalButton({
               height: `${dimensions.innerHeight}px`,
               margin: '2px',
               borderRadius: '100px',
-              background: 'linear-gradient(180deg, #1e293b 0%, #090d16 100%)',
-              border: isHovered ? '1px solid rgba(6, 182, 212, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
+              background: 'linear-gradient(180deg, #171a1d 0%, #080a0c 100%)',
+              border: isHovered ? '1px solid rgba(255, 177, 59, 0.5)' : '1px solid rgba(255, 255, 255, 0.08)',
               boxShadow: isPressed
                 ? 'inset 0px 2px 4px rgba(0, 0, 0, 0.6), inset 0px 1px 2px rgba(0, 0, 0, 0.4)'
                 : isHovered
-                ? '0 0 20px rgba(6, 182, 212, 0.3), inset 0 0 10px rgba(6, 182, 212, 0.15)'
+                ? '0 0 20px rgba(255, 177, 59, 0.35), inset 0 0 10px rgba(255, 177, 59, 0.15)'
                 : 'none',
               transition:
                 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.4s ease, height 0.4s ease, box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border 0.3s ease',
@@ -365,9 +365,9 @@ export function LiquidMetalButton({
               width: `${dimensions.width}px`,
               borderRadius: '100px',
               boxShadow: isPressed
-                ? '0px 0px 0px 1px rgba(6, 182, 212, 0.5), 0px 1px 2px 0px rgba(0, 0, 0, 0.5)'
+                ? '0px 0px 0px 1px rgba(255, 177, 59, 0.5), 0px 1px 2px 0px rgba(0, 0, 0, 0.5)'
                 : isHovered
-                ? '0px 0px 0px 1px rgba(6, 182, 212, 0.6), 0px 0px 25px rgba(6, 182, 212, 0.45), 0px 4px 10px rgba(0, 0, 0, 0.5)'
+                ? '0px 0px 0px 1px rgba(255, 177, 59, 0.7), 0px 0px 25px rgba(255, 177, 59, 0.5), 0px 4px 10px rgba(0, 0, 0, 0.5)'
                 : '0px 0px 0px 1px rgba(255, 255, 255, 0.12), 0px 10px 20px 0px rgba(0, 0, 0, 0.4)',
               transition:
                 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.4s ease, height 0.4s ease, box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -434,7 +434,7 @@ export function LiquidMetalButton({
                   height: '20px',
                   borderRadius: '50%',
                   background:
-                    'radial-gradient(circle, rgba(6, 182, 212, 0.6) 0%, rgba(6, 182, 212, 0) 70%)',
+                    'radial-gradient(circle, rgba(255, 177, 59, 0.6) 0%, rgba(255, 177, 59, 0) 70%)',
                   pointerEvents: 'none',
                   animation: 'ripple-animation 0.6s ease-out',
                 }}
@@ -482,7 +482,7 @@ export function LiquidMetalButton({
                   height: '20px',
                   borderRadius: '50%',
                   background:
-                    'radial-gradient(circle, rgba(6, 182, 212, 0.6) 0%, rgba(6, 182, 212, 0) 70%)',
+                    'radial-gradient(circle, rgba(255, 177, 59, 0.6) 0%, rgba(255, 177, 59, 0) 70%)',
                   pointerEvents: 'none',
                   animation: 'ripple-animation 0.6s ease-out',
                 }}
