@@ -86,7 +86,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
         warpVelocityRef.current = Math.min(warpVelocityRef.current * 1.09 + 0.8, 65);
 
         // Motion trail background during hyperspace jump
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
         ctx.fillRect(0, 0, width, height);
 
         for (let i = 0; i < stars.length; i++) {
@@ -119,16 +119,16 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
             ctx.lineTo(px, py);
 
             if (streakDist > 8) {
-              // Glowing warp streak with cyan tint
+              // Glowing warp streak with amber-cyan accents
               const gradient = ctx.createLinearGradient(prevPx, prevPy, px, py);
-              gradient.addColorStop(0, `rgba(0, 229, 255, ${alpha * 0.2})`);
-              gradient.addColorStop(0.7, `rgba(180, 245, 255, ${alpha * 0.8})`);
-              gradient.addColorStop(1, `rgba(255, 255, 255, ${alpha})`);
+              gradient.addColorStop(0, `rgba(217, 119, 6, ${alpha * 0.25})`);
+              gradient.addColorStop(0.7, `rgba(255, 177, 59, ${alpha * 0.85})`);
+              gradient.addColorStop(1, `rgba(15, 23, 42, ${alpha})`);
 
               ctx.strokeStyle = gradient;
               ctx.lineWidth = Math.max(1, s.r * (1 + streakDist * 0.05));
             } else {
-              ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+              ctx.strokeStyle = `rgba(15, 23, 42, ${alpha * 0.8})`;
               ctx.lineWidth = s.r;
             }
 
@@ -136,7 +136,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           }
         }
       } else {
-        // Idle gentle twinkling celestial starfield
+        // Idle gentle twinkling celestial particles on white
         ctx.clearRect(0, 0, width, height);
 
         for (let i = 0; i < stars.length; i++) {
@@ -150,7 +150,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           if (px >= 0 && px <= width && py >= 0 && py <= height) {
             ctx.beginPath();
             ctx.arc(px, py, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${s.a * flicker * 0.85})`;
+            ctx.fillStyle = `rgba(15, 23, 42, ${s.a * flicker * 0.5})`;
             ctx.fill();
           }
         }
@@ -178,11 +178,11 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
     let animId: number;
 
     const ringConfigs = [
-      { radius: 38, count: 20, dotSize: 2.5, color: '0, 200, 220' },
-      { radius: 30, count: 16, dotSize: 2.8, color: '0, 210, 230' },
-      { radius: 22, count: 12, dotSize: 3.0, color: '0, 220, 240' },
-      { radius: 14, count: 8,  dotSize: 3.2, color: '0, 230, 250' },
-      { radius: 6,  count: 4,  dotSize: 3.5, color: '0, 240, 255' },
+      { radius: 38, count: 20, dotSize: 2.5, color: '14, 116, 144' },
+      { radius: 30, count: 16, dotSize: 2.8, color: '2, 132, 199' },
+      { radius: 22, count: 12, dotSize: 3.0, color: '13, 148, 136' },
+      { radius: 14, count: 8,  dotSize: 3.2, color: '217, 119, 6' },
+      { radius: 6,  count: 4,  dotSize: 3.5, color: '245, 158, 11' },
     ];
 
     const rings = ringConfigs.map((cfg) => {
@@ -246,9 +246,9 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
       if (state.revealProgress > 80) {
         const centerPulse = 0.7 + 0.3 * Math.sin(time * 4);
         const grd = ctx!.createRadialGradient(CX, CY, 0, CX, CY, 12);
-        grd.addColorStop(0, `rgba(0, 240, 255, ${0.9 * centerPulse})`);
-        grd.addColorStop(0.3, `rgba(0, 220, 240, ${0.4 * centerPulse})`);
-        grd.addColorStop(1, 'rgba(0, 200, 220, 0)');
+        grd.addColorStop(0, `rgba(217, 119, 6, ${0.9 * centerPulse})`);
+        grd.addColorStop(0.3, `rgba(245, 158, 11, ${0.4 * centerPulse})`);
+        grd.addColorStop(1, 'rgba(255, 255, 255, 0)');
         ctx!.beginPath();
         ctx!.arc(CX, CY, 12, 0, Math.PI * 2);
         ctx!.fillStyle = grd;
@@ -256,7 +256,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
 
         ctx!.beginPath();
         ctx!.arc(CX, CY, 3 * centerPulse, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(255, 255, 255, ${0.9 * centerPulse})`;
+        ctx!.fillStyle = `rgba(15, 23, 42, ${0.9 * centerPulse})`;
         ctx!.fill();
       }
 
@@ -478,10 +478,10 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
             e.stopPropagation();
             triggerTransition();
           }}
-          className="px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider text-slate-400 hover:text-cyan-300 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/40 backdrop-blur-md transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+          className="px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider text-slate-600 hover:text-slate-900 bg-black/5 hover:bg-black/10 border border-black/10 hover:border-slate-400 backdrop-blur-md transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-sm"
         >
           <span>SKIP INTRO</span>
-          <span className="text-[10px] text-slate-500">[ESC]</span>
+          <span className="text-[10px] text-slate-400">[ESC]</span>
         </button>
       </div>
 
@@ -532,9 +532,9 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
 
           {/* Subtitle Badge */}
           <div className={`logo-intro-subline ${animationDone ? 'logo-intro-subline-visible' : ''}`}>
-            <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono uppercase tracking-[0.35em] text-cyan-400/90 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-              ENTERPRISE AI AGENTS & WORKFLOW MESH
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200/90 text-[11px] sm:text-xs font-mono uppercase tracking-[0.35em] text-slate-800 font-semibold shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+              ENTERPRISE AI AGENTS &amp; WORKFLOW MESH
             </span>
           </div>
         </div>
@@ -549,24 +549,24 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
             e.stopPropagation();
             triggerTransition();
           }}
-          className="group relative inline-flex items-center gap-3.5 px-8 py-3.5 rounded-full bg-black/70 hover:bg-black/90 border border-cyan-400/40 hover:border-cyan-300 backdrop-blur-2xl shadow-[0_0_25px_rgba(6,182,212,0.25)] hover:shadow-[0_0_40px_rgba(6,182,212,0.65)] transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer overflow-hidden"
+          className="group relative inline-flex items-center gap-3.5 px-8 py-3.5 rounded-full bg-[#0b0e13] hover:bg-black border border-slate-800 text-white shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:shadow-[0_15px_40px_rgba(255,177,59,0.3)] transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer overflow-hidden"
         >
           {/* Ambient inner glow layer */}
-          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/15 via-teal-500/20 to-cyan-500/15 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Left glowing spark indicator */}
-          <div className="relative z-10 w-6 h-6 rounded-full bg-cyan-400/15 border border-cyan-400/30 flex items-center justify-center group-hover:scale-110 group-hover:bg-cyan-400/25 transition-all duration-300">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-300 group-hover:text-cyan-100 transition-colors" />
+          <div className="relative z-10 w-6 h-6 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center group-hover:scale-110 group-hover:bg-amber-400/30 transition-all duration-300">
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 group-hover:text-amber-200 transition-colors" />
           </div>
 
           {/* Text: Enter the platform */}
-          <span className="relative z-10 font-sans text-sm sm:text-base font-medium tracking-wide text-slate-100 group-hover:text-white transition-colors duration-200">
+          <span className="relative z-10 font-sans text-sm sm:text-base font-medium tracking-wide text-white group-hover:text-amber-100 transition-colors duration-200">
             Enter the platform
           </span>
 
           {/* Right sleek arrow */}
-          <div className="relative z-10 w-6 h-6 rounded-full bg-cyan-500/20 group-hover:bg-cyan-400 flex items-center justify-center transition-all duration-300 group-hover:translate-x-0.5">
-            <ArrowRight className="w-3.5 h-3.5 text-cyan-300 group-hover:text-black transition-colors" />
+          <div className="relative z-10 w-6 h-6 rounded-full bg-amber-400 group-hover:bg-amber-300 flex items-center justify-center transition-all duration-300 group-hover:translate-x-0.5 shadow-sm">
+            <ArrowRight className="w-3.5 h-3.5 text-black transition-colors" />
           </div>
         </button>
       </div>
@@ -583,7 +583,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           justify-content: center;
           align-items: center;
           overflow: hidden;
-          background: #000000;
+          background: #ffffff;
           z-index: 100;
           cursor: pointer;
           user-select: none;
@@ -594,7 +594,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
         /* Hyperspace Warp Camera Zoom & Dissolve */
         .logo-intro-warp-exit {
           opacity: 0;
-          filter: blur(12px) brightness(1.6);
+          filter: blur(12px) brightness(1.1);
           pointer-events: none;
         }
 
@@ -618,7 +618,7 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
         .warp-flash-burst {
           position: absolute;
           inset: 0;
-          background: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.5) 0%, rgba(0, 229, 255, 0.15) 30%, transparent 70%);
+          background: radial-gradient(circle at 50% 50%, rgba(255, 177, 59, 0.35) 0%, rgba(255, 255, 255, 0.8) 40%, #ffffff 80%);
           opacity: 0;
           pointer-events: none;
           z-index: 2;
@@ -640,8 +640,8 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           margin-top: -150px;
           margin-left: -150px;
           border-radius: 50%;
-          border: 2px solid rgba(0, 229, 255, 0.8);
-          box-shadow: 0 0 50px rgba(0, 229, 255, 0.6), inset 0 0 30px rgba(0, 229, 255, 0.4);
+          border: 2px solid rgba(255, 177, 59, 0.85);
+          box-shadow: 0 0 50px rgba(255, 177, 59, 0.5), inset 0 0 30px rgba(255, 177, 59, 0.3);
           opacity: 0;
           pointer-events: none;
           z-index: 2;
@@ -661,8 +661,8 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           right: 0;
           height: 2px;
           margin-top: -1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.9) 30%, #ffffff 50%, rgba(0, 229, 255, 0.9) 70%, transparent 100%);
-          box-shadow: 0 0 25px rgba(0, 229, 255, 0.9);
+          background: linear-gradient(90deg, transparent 0%, rgba(255, 177, 59, 0.9) 30%, #ffb13b 50%, rgba(255, 177, 59, 0.9) 70%, transparent 100%);
+          box-shadow: 0 0 25px rgba(255, 177, 59, 0.9);
           opacity: 0;
           pointer-events: none;
           z-index: 3;
@@ -708,31 +708,32 @@ export default function LogoIntro({ onStartExit, onComplete }: LogoIntroProps) {
           letter-spacing: -2px;
           transform-style: preserve-3d;
           opacity: 0;
-          color: #fff;
+          color: #0b0e13;
           font-family: var(--font-inter), 'Inter', 'Segoe UI', sans-serif;
         }
         .logo-intro-front {
           position: relative;
           z-index: 3;
-          color: #fff;
+          color: #0b0e13;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
         .logo-intro-depth {
           position: absolute;
           top: 0; left: 0;
           z-index: 1;
         }
-        .logo-intro-depth-1 { transform: translateZ(-3px); color: rgba(255,255,255,0.5); }
-        .logo-intro-depth-2 { transform: translateZ(-6px); color: rgba(255,255,255,0.35); }
-        .logo-intro-depth-3 { transform: translateZ(-9px); color: rgba(255,255,255,0.22); }
-        .logo-intro-depth-4 { transform: translateZ(-12px); color: rgba(255,255,255,0.12); }
-        .logo-intro-depth-5 { transform: translateZ(-15px); color: rgba(200,220,240,0.08); }
-        .logo-intro-depth-6 { transform: translateZ(-18px); color: rgba(180,210,240,0.05); }
+        .logo-intro-depth-1 { transform: translateZ(-3px); color: rgba(15, 23, 42, 0.6); }
+        .logo-intro-depth-2 { transform: translateZ(-6px); color: rgba(15, 23, 42, 0.45); }
+        .logo-intro-depth-3 { transform: translateZ(-9px); color: rgba(15, 23, 42, 0.32); }
+        .logo-intro-depth-4 { transform: translateZ(-12px); color: rgba(15, 23, 42, 0.2); }
+        .logo-intro-depth-5 { transform: translateZ(-15px); color: rgba(15, 23, 42, 0.12); }
+        .logo-intro-depth-6 { transform: translateZ(-18px); color: rgba(15, 23, 42, 0.06); }
         .logo-intro-glow {
           position: absolute;
           top: 50%; left: 50%;
           width: 70px; height: 70px;
           transform: translate(-50%, -50%) translateZ(-5px);
-          background: radial-gradient(circle, rgba(0,229,255,0.12) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(255, 177, 59, 0.15) 0%, transparent 70%);
           border-radius: 50%;
           z-index: 0;
           opacity: 0;
