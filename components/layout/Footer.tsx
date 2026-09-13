@@ -63,11 +63,11 @@ const footerLinkGroups = [
 
 export const Footer: React.FC = () => {
   return (
-    <footer id="contact" className="relative bg-[#080a0c]/90 backdrop-blur-md text-slate-400 overflow-hidden border-t border-zinc-800/80 pt-16 md:pt-24 scroll-mt-20">
+    <footer id="contact" className="relative bg-black/60 backdrop-blur-md text-slate-400 overflow-hidden border-t border-zinc-800/80 pt-16 md:pt-24 scroll-mt-20">
       {/* Subtle top accent gradient */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
-      <div className="absolute top-20 right-10 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+      <div className="absolute top-20 right-10 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
 
@@ -81,29 +81,29 @@ export const Footer: React.FC = () => {
                 variant="inline"
                 size="md"
                 showSubtitle={true}
-                subtitle="ENTERPRISE AI AGENTS"
+                subtitle="Autonomous Cloud Fabric"
               />
             </Link>
 
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
-              Empowering global enterprises with deterministic AI agent systems, resilient multi-cloud engineering, and mission-critical business automation.
+              Empowering global enterprises with multi-cloud engineering, AI platform development, resilient infrastructure, and domain-focused digital transformation.
             </p>
 
             {/* Headquarters and Contact Details */}
             <div className="space-y-3 pt-2 text-xs">
               <div className="flex items-start gap-2.5 text-slate-300">
-                <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                 <span>4080 McGinnis Ferry Rd, Suite 1005, Alpharetta, GA 30005</span>
               </div>
               <div className="flex items-center gap-2.5 text-slate-300">
-                <Phone className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href="tel:+17705746149" className="hover:text-amber-300 transition-colors">
+                <Phone className="w-4 h-4 text-teal-400 shrink-0" />
+                <a href="tel:+17705746149" className="hover:text-cyan-300 transition-colors">
                   +1 (770) 574-6149
                 </a>
               </div>
               <div className="flex items-center gap-2.5 text-slate-300">
-                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href="mailto:info@cloudfen.com" className="text-amber-400 hover:text-amber-300 transition-colors">
+                <Mail className="w-4 h-4 text-indigo-400 shrink-0" />
+                <a href="mailto:info@cloudfen.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">
                   info@cloudfen.com
                 </a>
               </div>
@@ -122,7 +122,7 @@ export const Footer: React.FC = () => {
                     <li key={itemIndex}>
                       <Link
                         href={item.href}
-                        className="text-xs sm:text-sm text-slate-400 hover:text-amber-300 transition-colors duration-150 block"
+                        className="text-xs sm:text-sm text-slate-400 hover:text-cyan-300 transition-colors duration-150 block"
                       >
                         {item.title}
                       </Link>
@@ -148,28 +148,28 @@ export const Footer: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Share CloudFen on Social"
-              className="text-slate-400 hover:text-amber-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
+              className="text-slate-400 hover:text-cyan-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
             >
               <Share2 className="w-5 h-5" />
             </a>
             <a
               href="mailto:info@cloudfen.com"
               aria-label="Message CloudFen Support"
-              className="text-slate-400 hover:text-amber-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
+              className="text-slate-400 hover:text-cyan-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
             >
               <MessageCircle className="w-5 h-5" />
             </a>
             <Link
               href="/contact"
               aria-label="Quick Link to CloudFen Portal"
-              className="text-slate-400 hover:text-amber-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
+              className="text-slate-400 hover:text-cyan-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
             >
               <LinkIcon className="w-5 h-5" />
             </Link>
             <Link
               href="/"
               aria-label="Global Web Presence"
-              className="text-slate-400 hover:text-amber-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
+              className="text-slate-400 hover:text-cyan-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
             >
               <Globe className="w-5 h-5" />
             </Link>
@@ -178,14 +178,14 @@ export const Footer: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="CloudFen Technical Posts"
-              className="text-slate-400 hover:text-amber-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
+              className="text-slate-400 hover:text-cyan-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
             >
               <Feather className="w-5 h-5" />
             </a>
             <Link
               href="/contact"
               aria-label="Send Inquiry to CloudFen"
-              className="text-slate-400 hover:text-amber-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
+              className="text-slate-400 hover:text-cyan-300 transition-colors p-1.5 rounded-lg hover:bg-zinc-900"
             >
               <Send className="w-5 h-5" />
             </Link>

@@ -80,7 +80,7 @@ export const Modal: React.FC<ModalProps> = ({
           particleCount: 90,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#ffb13b', '#ffd277', '#d97706', '#ffffff'],
+          colors: ['#00e5ff', '#38bdf8', '#4fd1c5', '#ffffff'],
         });
       } catch {
         // Safe fallback
@@ -104,14 +104,14 @@ export const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-2xl bg-[#0b0e13] border border-amber-500/40 rounded-3xl shadow-[0_0_60px_rgba(255,177,59,0.2)] overflow-hidden z-10 my-8">
+      <div className="relative w-full max-w-2xl bg-[#0b0f19] border border-cyan-500/40 rounded-3xl shadow-[0_0_60px_rgba(6,182,212,0.25)] overflow-hidden z-10 my-8">
         {/* Top Glowing Beam */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 shadow-[0_0_10px_rgba(255,177,59,0.6)]" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-500" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl bg-zinc-900/90 border border-zinc-700 text-slate-400 hover:text-white hover:border-amber-400/50 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-2 rounded-xl bg-zinc-900/90 border border-zinc-700 text-slate-400 hover:text-white hover:border-cyan-400/50 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-4 h-4" />
@@ -122,7 +122,7 @@ export const Modal: React.FC<ModalProps> = ({
           {isSubmitted ? (
             /* Success Confirmation State */
             <div className="text-center py-6 space-y-6">
-              <div className="w-16 h-16 rounded-3xl bg-amber-500/20 border border-amber-400 flex items-center justify-center mx-auto text-amber-300 shadow-[0_0_25px_rgba(255,177,59,0.4)]">
+              <div className="w-16 h-16 rounded-3xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center mx-auto text-cyan-300 shadow-[0_0_25px_rgba(6,182,212,0.4)]">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
@@ -131,7 +131,7 @@ export const Modal: React.FC<ModalProps> = ({
                   Readiness Call Request Confirmed
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                  Thank you, <span className="text-amber-300 font-bold">{name || 'Leader'}</span>. Our AI Systems Engineering team has received your workflow brief for <span className="text-white font-semibold">{company || 'your organization'}</span>.
+                  Thank you, <span className="text-cyan-300 font-bold">{name || 'Leader'}</span>. Our AI Systems Engineering team has received your workflow brief for <span className="text-white font-semibold">{company || 'your organization'}</span>.
                 </p>
               </div>
 
@@ -143,11 +143,11 @@ export const Modal: React.FC<ModalProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Target Workflow:</span>
-                  <span className="text-amber-300 capitalize">{workflow.replace(/-/g, ' ')}</span>
+                  <span className="text-cyan-300 capitalize">{workflow.replace(/-/g, ' ')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Volume Tier:</span>
-                  <span className="text-amber-300">{volume} transactions/month</span>
+                  <span className="text-teal-300">{volume} transactions/month</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Target Timeline:</span>
@@ -162,7 +162,7 @@ export const Modal: React.FC<ModalProps> = ({
               <div className="pt-2 flex justify-center">
                 <button
                   onClick={handleResetAndClose}
-                  className="px-8 py-3.5 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 shadow-md transition-all cursor-pointer"
+                  className="px-8 py-3.5 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-cyan-400 to-teal-300 hover:from-cyan-300 hover:to-teal-200 shadow-md transition-all cursor-pointer"
                 >
                   Return to Website
                 </button>
@@ -173,8 +173,8 @@ export const Modal: React.FC<ModalProps> = ({
             <>
               {/* Header */}
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-xs font-mono text-amber-300">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-xs font-mono text-cyan-300">
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                   <span>4-Week Agent Readiness Sprint</span>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold text-white">
@@ -199,7 +199,7 @@ export const Modal: React.FC<ModalProps> = ({
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Jane Doe"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
                     />
                   </div>
 
@@ -214,7 +214,7 @@ export const Modal: React.FC<ModalProps> = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="jane@enterprise.com"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
                     />
                   </div>
                 </div>
@@ -231,7 +231,7 @@ export const Modal: React.FC<ModalProps> = ({
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="Acme Global Inc."
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
                     />
                   </div>
 
@@ -243,7 +243,7 @@ export const Modal: React.FC<ModalProps> = ({
                     <select
                       value={workflow}
                       onChange={(e) => setWorkflow(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
                     >
                       <option value="sourcing">Candidate Sourcing & Screening</option>
                       <option value="onboarding">Employee / Contractor Onboarding</option>
@@ -264,7 +264,7 @@ export const Modal: React.FC<ModalProps> = ({
                     <select
                       value={volume}
                       onChange={(e) => setVolume(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
                     >
                       <option value="<1k">&lt; 1,000 / month</option>
                       <option value="1k-10k">1,000 - 10,000 / month</option>
@@ -282,7 +282,7 @@ export const Modal: React.FC<ModalProps> = ({
                       value={systems}
                       onChange={(e) => setSystems(e.target.value)}
                       placeholder="e.g. Workday, SAP, Greenhouse, Jira"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 font-mono"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono"
                     />
                   </div>
                 </div>
@@ -297,13 +297,13 @@ export const Modal: React.FC<ModalProps> = ({
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="e.g. Manual document review takes 4 hours per candidate; need automated scoring and HRIS writeback."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 font-mono resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-zinc-800 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 font-mono resize-none"
                   />
                 </div>
 
                 {/* Trust Guarantee Note */}
                 <div className="p-3 rounded-xl bg-black/60 border border-zinc-800/80 flex items-start gap-2.5 text-[11px] text-slate-400 font-mono">
-                  <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
                   <span>
                     Mutual NDA signed prior to call. Zero customer data is retained or used for external model training.
                   </span>
@@ -314,7 +314,7 @@ export const Modal: React.FC<ModalProps> = ({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-4 px-6 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 shadow-[0_0_25px_rgba(255,177,59,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="w-full py-4 px-6 rounded-xl text-sm font-bold text-black bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-300 hover:from-cyan-300 hover:to-teal-300 shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <>

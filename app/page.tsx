@@ -67,7 +67,7 @@ export default function Home() {
         <div
           className="fixed inset-0 z-40 pointer-events-none transition-opacity duration-1000 ease-out animate-fade-out"
           style={{
-            background: 'radial-gradient(circle at 50% 30%, rgba(255, 177, 59, 0.18) 0%, rgba(217, 119, 6, 0.08) 40%, transparent 75%)',
+            background: 'radial-gradient(circle at 50% 30%, rgba(6, 182, 212, 0.18) 0%, rgba(13, 148, 136, 0.08) 40%, transparent 75%)',
           }}
         />
       )}
@@ -75,7 +75,7 @@ export default function Home() {
       {/* 3. Main Website Canvas - Reveals with cinematic depth & de-blur */}
       <div
         id="main-content"
-        className={`relative min-h-screen text-slate-100 selection:bg-amber-500/30 selection:text-amber-200 overflow-x-hidden ${
+        className={`relative min-h-screen text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden ${
           introState === 'intro'
             ? 'opacity-0 scale-[0.95] blur-sm pointer-events-none h-screen overflow-hidden'
             : introState === 'transitioning'
